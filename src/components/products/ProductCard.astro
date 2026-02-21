@@ -1,0 +1,83 @@
+---
+import { Image } from "astro:assets";
+import Badge from "@components/ui/Badge.astro";
+import { useTranslations } from "@i18n/utils";
+import type { Lang } from "@i18n/ui";
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  product: CollectionEntry<"products">;
+  lang?: Lang;
+}
+
+const { product, lang = "ro" } = Astro.props;
+const t = useTranslations(lang);
+
+const name = lang === "en" ? product.data.nameEn : product.data.name;
+const description = lang === "en" ? product.data.descriptionEn : product.data.description;
+const { price, currency, image, imageAlt, category, inStock, featured } = product.data;
+
+const formattedPrice = new Intl.NumberFormat("ro-RO", {
+  style: "currency",
+  currency: currency,
+  minimumFractionDigits: 0,
+}).format(price);
+---
+
+<article
+  class="group bg-card rounded-[var(--radius-lg)] border border-theme overflow-hidden card-hover flex flex-col"
+>
+  <!-- Product Image -->
+  <div class="relative overflow-hidden aspect-square">
+    {
+      image ? (
+        <Image
+          src={image}
+          alt={imageAlt}
+          width={400}
+          height={400}
+          class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          loading="lazy"
+        />
+      ) : (
+        <div class="w-full h-full bg-[var(--color-cream-dark)] flex items-center justify-center">
+          <span class="text-6xl" aria-hidden="true">🎁</span>
+        </div>
+      )
+    }
+    {featured && (
+      <div class="absolute top-3 left-3">
+        <Badge variant="gold">★ Featured</Badge>
+      </div>
+    )}
+    {!inStock && (
+      <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
+        <Badge variant="default" class="text-sm">{t("products.outOfStock")}</Badge>
+      </div>
+    )}
+  </div>
+
+  <!-- Product Info -->
+  <div class="p-5 flex flex-col flex-1">
+    {category && (
+      <Badge variant="terracotta" class="mb-2 self-start">{category}</Badge>
+    )}
+    <h2
+      class="text-base font-semibold text-primary mb-2 group-hover:text-terracotta transition-colors line-clamp-2"
+      style="font-family: var(--font-heading);"
+    >
+      {name}
+    </h2>
+    {
+      description && (
+        <p class="text-sm text-muted line-clamp-3 mb-4 flex-1">{description}</p>
+      )
+    }
+    <div class="mt-auto flex items-center justify-between">
+      <span class="text-lg font-bold text-terracotta">{formattedPrice}</span>
+      <span class="text-xs text-muted">
+        {inStock ? t("products.inStock") : t("products.outOfStock")}
+      </span>
+    </div>
+  </div>
+</article>

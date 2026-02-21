@@ -1,0 +1,72 @@
+---
+import { siteConfig } from "@data/site-config";
+import { getAlternatePath } from "@i18n/utils";
+import type { Lang } from "@i18n/ui";
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  type?: "website" | "article";
+  lang?: Lang;
+  noindex?: boolean;
+  canonicalURL?: string;
+}
+
+const {
+  title,
+  description,
+  image = siteConfig.ogImage,
+  type = "website",
+  lang = "ro",
+  noindex = false,
+  canonicalURL,
+} = Astro.props;
+
+const canonical = canonicalURL ?? new URL(Astro.url.pathname, siteConfig.url).href;
+const resolvedTitle = title
+  ? `${title} | ${siteConfig.name}`
+  : `${siteConfig.name} — ${siteConfig.tagline[lang]}`;
+const resolvedDescription = description ?? siteConfig.description[lang];
+const resolvedImage = image.startsWith("http") ? image : new URL(image, siteConfig.url).href;
+
+const alternate = getAlternatePath(Astro.url);
+const hreflangRo = new URL(alternate.ro, siteConfig.url).href;
+const hreflangEn = new URL(alternate.en, siteConfig.url).href;
+
+const ogLocale = lang === "ro" ? "ro_RO" : "en_US";
+---
+
+<!-- Primary Meta -->
+<title>{resolvedTitle}</title>
+<meta name="description" content={resolvedDescription} />
+<meta name="author" content={siteConfig.author} />
+{noindex ? <meta name="robots" content="noindex, nofollow" /> : <meta name="robots" content="index, follow" />}
+
+<!-- Canonical -->
+<link rel="canonical" href={canonical} />
+
+<!-- hreflang -->
+<link rel="alternate" hreflang="ro" href={hreflangRo} />
+<link rel="alternate" hreflang="en" href={hreflangEn} />
+<link rel="alternate" hreflang="x-default" href={hreflangRo} />
+
+<!-- Open Graph -->
+<meta property="og:title" content={resolvedTitle} />
+<meta property="og:description" content={resolvedDescription} />
+<meta property="og:type" content={type} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={resolvedImage} />
+<meta property="og:image:alt" content={resolvedTitle} />
+<meta property="og:locale" content={ogLocale} />
+<meta property="og:site_name" content={siteConfig.name} />
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:site" content={siteConfig.social.twitter} />
+<meta name="twitter:title" content={resolvedTitle} />
+<meta name="twitter:description" content={resolvedDescription} />
+<meta name="twitter:image" content={resolvedImage} />
+
+<!-- RSS Feed -->
+<link rel="alternate" type="application/rss+xml" title={siteConfig.name} href="/rss.xml" />

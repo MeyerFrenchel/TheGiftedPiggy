@@ -1,0 +1,28 @@
+---
+import PageLayout from "@layouts/PageLayout.astro";
+import SectionHeading from "@components/ui/SectionHeading.astro";
+import ProductGrid from "@components/products/ProductGrid.astro";
+import ProductCTA from "@components/products/ProductCTA.astro";
+import { getCollection } from "astro:content";
+import { useTranslations } from "@i18n/utils";
+
+const lang = "en";
+const t = useTranslations(lang);
+const products = await getCollection("products", ({ data }) => data.inStock);
+---
+
+<PageLayout
+  title={t("products.title")}
+  description={t("products.subtitle")}
+  lang={lang}
+>
+  <div class="container mx-auto px-4 py-12">
+    <SectionHeading
+      title={t("products.title")}
+      subtitle={t("products.subtitle")}
+      as="h1"
+    />
+    <ProductGrid {products} {lang} />
+    <ProductCTA {lang} />
+  </div>
+</PageLayout>

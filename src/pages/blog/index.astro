@@ -1,0 +1,27 @@
+---
+import PageLayout from "@layouts/PageLayout.astro";
+import SectionHeading from "@components/ui/SectionHeading.astro";
+import BlogList from "@components/blog/BlogList.astro";
+import { getCollection } from "astro:content";
+import { useTranslations } from "@i18n/utils";
+
+const lang = "ro";
+const t = useTranslations(lang);
+const posts = await getCollection("blog", ({ data }) => !data.draft && data.lang === "ro");
+const sortedPosts = posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+
+<PageLayout
+  title={t("blog.title")}
+  description={t("blog.subtitle")}
+  lang={lang}
+>
+  <div class="container mx-auto px-4 py-12">
+    <SectionHeading
+      title={t("blog.title")}
+      subtitle={t("blog.subtitle")}
+      as="h1"
+    />
+    <BlogList posts={sortedPosts} {lang} />
+  </div>
+</PageLayout>

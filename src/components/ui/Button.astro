@@ -1,0 +1,53 @@
+---
+interface Props {
+  href?: string;
+  variant?: "primary" | "secondary" | "outline" | "ghost";
+  size?: "sm" | "md" | "lg";
+  class?: string;
+  type?: "button" | "submit" | "reset";
+  [key: string]: unknown;
+}
+
+const {
+  href,
+  variant = "primary",
+  size = "md",
+  class: className,
+  type = "button",
+  ...rest
+} = Astro.props;
+
+const base =
+  "inline-flex items-center justify-center gap-2 font-semibold rounded-[var(--radius-full)] transition-all duration-300 focus-visible:outline-2 focus-visible:outline-offset-2";
+
+const variants = {
+  primary:
+    "bg-[var(--color-terracotta)] text-white hover:bg-[var(--color-terracotta-dark)] shadow-[var(--shadow-warm)] hover:shadow-[var(--shadow-md)] hover:-translate-y-0.5 focus-visible:outline-[var(--color-terracotta)]",
+  secondary:
+    "bg-[var(--color-sage)] text-white hover:bg-[var(--color-sage-dark)] shadow-[var(--shadow-soft)] hover:shadow-[var(--shadow-md)] hover:-translate-y-0.5 focus-visible:outline-[var(--color-sage)]",
+  outline:
+    "border-2 border-[var(--color-terracotta)] text-[var(--color-terracotta)] hover:bg-[var(--color-terracotta)] hover:text-white focus-visible:outline-[var(--color-terracotta)]",
+  ghost:
+    "text-[var(--text-secondary)] hover:bg-[var(--bg-accent)] hover:text-[var(--color-terracotta)] focus-visible:outline-[var(--color-terracotta)]",
+};
+
+const sizes = {
+  sm: "text-sm px-4 py-1.5",
+  md: "text-sm px-6 py-2.5",
+  lg: "text-base px-8 py-3.5",
+};
+
+const classes = [base, variants[variant], sizes[size], className].filter(Boolean).join(" ");
+---
+
+{
+  href ? (
+    <a href={href} class={classes} {...rest}>
+      <slot />
+    </a>
+  ) : (
+    <button type={type} class={classes} {...rest}>
+      <slot />
+    </button>
+  )
+}

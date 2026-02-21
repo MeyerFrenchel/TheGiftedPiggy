@@ -1,0 +1,144 @@
+---
+import PageLayout from "./PageLayout.astro";
+import StructuredData from "@components/seo/StructuredData.astro";
+import { Image } from "astro:assets";
+import { useTranslations } from "@i18n/utils";
+import type { Lang } from "@i18n/ui";
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  post: CollectionEntry<"blog">;
+  lang?: Lang;
+}
+
+const { post, lang = "ro" } = Astro.props;
+const { title, description, pubDate, updatedDate, heroImage, heroImageAlt, author } = post.data;
+const t = useTranslations(lang);
+
+const formattedPubDate = pubDate.toLocaleDateString(lang === "ro" ? "ro-RO" : "en-US", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
+
+const formattedUpdatedDate = updatedDate?.toLocaleDateString(lang === "ro" ? "ro-RO" : "en-US", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
+---
+
+<PageLayout
+  title={title}
+  description={description}
+  type="article"
+  {lang}
+>
+  <StructuredData
+    type="blogPost"
+    {lang}
+    {title}
+    {description}
+    {pubDate}
+    {updatedDate}
+    {author}
+    slot="head"
+  />
+  <article class="container mx-auto max-w-3xl px-4 py-12">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-8">
+      <ol class="flex items-center gap-2 text-sm text-muted">
+        <li>
+          <a href={lang === "en" ? "/en/" : "/"} class="hover:text-terracotta transition-colors">
+            {t("nav.home")}
+          </a>
+        </li>
+        <li aria-hidden="true">/</li>
+        <li>
+          <a
+            href={lang === "en" ? "/en/blog" : "/blog"}
+            class="hover:text-terracotta transition-colors"
+          >
+            {t("nav.blog")}
+          </a>
+        </li>
+        <li aria-hidden="true">/</li>
+        <li class="text-primary font-medium" aria-current="page">{title}</li>
+      </ol>
+    </nav>
+
+    <!-- Hero Image -->
+    {
+      heroImage && (
+        <div class="mb-8 overflow-hidden rounded-[var(--radius-lg)]">
+          <Image
+            src={heroImage}
+            alt={heroImageAlt ?? title}
+            width={800}
+            height={400}
+            class="w-full object-cover"
+            loading="eager"
+          />
+        </div>
+      )
+    }
+
+    <!-- Post Header -->
+    <header class="mb-10">
+      <h1
+        class="font-heading mb-4 text-4xl font-bold leading-tight text-primary md:text-5xl"
+        style="font-family: var(--font-heading);"
+      >
+        {title}
+      </h1>
+      <div class="flex flex-wrap items-center gap-4 text-sm text-muted">
+        <span>{t("blog.by")} {author}</span>
+        <span aria-hidden="true">·</span>
+        <time datetime={pubDate.toISOString()}>
+          {t("blog.publishedOn")}
+          {formattedPubDate}
+        </time>
+        {
+          updatedDate && (
+            <>
+              <span aria-hidden="true">·</span>
+              <time datetime={updatedDate.toISOString()}>
+                {t("blog.updatedOn")} {formattedUpdatedDate}
+              </time>
+            </>
+          )
+        }
+      </div>
+    </header>
+
+    <!-- Post Content -->
+    <div class="prose prose-lg max-w-none">
+      <slot />
+    </div>
+
+    <!-- Back to Blog -->
+    <div class="mt-12 border-t border-theme pt-8">
+      <a
+        href={lang === "en" ? "/en/blog" : "/blog"}
+        class="inline-flex items-center gap-2 text-terracotta hover:text-terracotta-dark transition-colors font-medium"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="m12 19-7-7 7-7"></path>
+          <path d="M19 12H5"></path>
+        </svg>
+        {t("ui.backToBlog")}
+      </a>
+    </div>
+  </article>
+</PageLayout>

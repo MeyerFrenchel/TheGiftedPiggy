@@ -1,0 +1,26 @@
+---
+interface Props {
+  variant?: "terracotta" | "sage" | "gold" | "blush" | "default";
+  class?: string;
+}
+
+const { variant = "default", class: className } = Astro.props;
+
+const variants = {
+  terracotta: "bg-[var(--color-blush)] text-[var(--color-terracotta-dark)]",
+  sage: "bg-[rgba(143,174,139,0.2)] text-[var(--color-sage-dark)]",
+  gold: "bg-[rgba(212,168,83,0.15)] text-[var(--color-gold-dark)]",
+  blush: "bg-[var(--color-blush)] text-[var(--color-espresso)]",
+  default: "bg-[var(--bg-accent)] text-[var(--text-secondary)]",
+};
+---
+
+<span
+  class:list={[
+    "inline-flex items-center rounded-[var(--radius-full)] px-2.5 py-0.5 text-xs font-medium",
+    variants[variant],
+    className,
+  ]}
+>
+  <slot />
+</span>

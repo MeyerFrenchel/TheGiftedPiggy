@@ -1,0 +1,55 @@
+---
+import PageLayout from "@layouts/PageLayout.astro";
+import SectionHeading from "@components/ui/SectionHeading.astro";
+import { useTranslations } from "@i18n/utils";
+
+const lang = "en";
+const t = useTranslations(lang);
+---
+
+<PageLayout
+  title={t("story.title")}
+  description={t("story.subtitle")}
+  lang={lang}
+>
+  <div class="container mx-auto max-w-3xl px-4 py-12">
+    <SectionHeading
+      title={t("story.title")}
+      subtitle={t("story.subtitle")}
+      align="left"
+      as="h1"
+    />
+
+    <div class="prose prose-lg">
+      <p>
+        Hi there! I'm the creator behind <strong>The Gifted Piggy</strong> — a little workshop
+        full of heart where every gift is made with love and dedication.
+      </p>
+
+      <h2>How it all began</h2>
+      <p>
+        My passion for handmade things started when I was young, when my grandmother taught me
+        to knit and embroider. Over the years, this passion transformed into a true art: creating
+        unique, personalized gifts that bring joy to loved ones.
+      </p>
+
+      <h2>Why handmade?</h2>
+      <p>
+        In a world full of mass-produced items, a handmade gift says <em>"I thought of you"</em>.
+        Every piece I create is unique — you won't find two identical ones. I put my heart into
+        every detail, from choosing materials to packaging.
+      </p>
+
+      <h2>What I create</h2>
+      <p>
+        Personalized gift baskets, scented candles, natural care products and many other beautiful
+        surprises. If you have an idea or a special event, you can contact me for a gift created
+        especially for you.
+      </p>
+
+      <p>
+        Thank you for being part of The Gifted Piggy story! 🐷
+      </p>
+    </div>
+  </div>
+</PageLayout>

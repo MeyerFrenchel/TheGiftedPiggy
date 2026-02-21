@@ -1,0 +1,44 @@
+---
+import SectionHeading from "@components/ui/SectionHeading.astro";
+import BlogCard from "@components/blog/BlogCard.astro";
+import Button from "@components/ui/Button.astro";
+import { useTranslations } from "@i18n/utils";
+import type { Lang } from "@i18n/ui";
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  posts: CollectionEntry<"blog">[];
+  lang?: Lang;
+}
+
+const { posts, lang = "ro" } = Astro.props;
+const t = useTranslations(lang);
+const latest = posts.slice(0, 3);
+---
+
+{
+  latest.length > 0 && (
+    <section class="py-16 bg-secondary" aria-label={t("blog.latest")}>
+      <div class="container mx-auto px-4">
+        <SectionHeading
+          title={t("blog.latest")}
+          subtitle={t("blog.subtitle")}
+        />
+        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {latest.map((post) => (
+            <BlogCard {post} {lang} />
+          ))}
+        </div>
+        <div class="mt-10 text-center">
+          <Button
+            href={lang === "en" ? "/en/blog" : "/blog"}
+            variant="outline"
+            size="lg"
+          >
+            {t("blog.title")} →
+          </Button>
+        </div>
+      </div>
+    </section>
+  )
+}

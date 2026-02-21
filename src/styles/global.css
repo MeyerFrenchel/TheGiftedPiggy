@@ -1,0 +1,228 @@
+@import "tailwindcss";
+@import "./fonts.css";
+
+@theme {
+  /* ===== COLORS ===== */
+  --color-cream: #fdf6ec;
+  --color-cream-dark: #f5e6d0;
+  --color-espresso: #3c2415;
+  --color-terracotta: #c67b5c;
+  --color-terracotta-dark: #a85d3f;
+  --color-sage: #8fae8b;
+  --color-sage-dark: #6e8e6a;
+  --color-gold: #d4a853;
+  --color-gold-dark: #b8903d;
+  --color-blush: #f2d1c9;
+  --color-charcoal: #2d2d2d;
+  --color-charcoal-light: #3d3d3d;
+  --color-ivory: #faf7f2;
+
+  /* ===== TYPOGRAPHY ===== */
+  --font-heading: "Playfair Display", Georgia, serif;
+  --font-body: "Nunito", "Segoe UI", system-ui, sans-serif;
+
+  /* ===== SHADOWS ===== */
+  --shadow-soft: 0 2px 8px rgba(60, 36, 21, 0.08);
+  --shadow-md: 0 4px 16px rgba(60, 36, 21, 0.12);
+  --shadow-lg: 0 8px 32px rgba(60, 36, 21, 0.16);
+  --shadow-warm: 0 4px 12px rgba(198, 123, 92, 0.15);
+
+  /* ===== BORDER RADIUS ===== */
+  --radius-sm: 6px;
+  --radius-base: 12px;
+  --radius-lg: 20px;
+  --radius-full: 9999px;
+
+  /* ===== TRANSITIONS ===== */
+  --transition-base: all 0.3s ease;
+  --transition-fast: all 0.15s ease;
+}
+
+/* ===== CSS CUSTOM PROPERTIES FOR THEMING ===== */
+:root,
+[data-theme="light"] {
+  --bg-primary: var(--color-cream);
+  --bg-secondary: var(--color-ivory);
+  --bg-accent: var(--color-cream-dark);
+  --text-primary: var(--color-espresso);
+  --text-secondary: #6b4c36;
+  --text-muted: #9d7a63;
+  --border-color: rgba(60, 36, 21, 0.1);
+  --card-bg: var(--color-ivory);
+  --nav-bg: rgba(253, 246, 236, 0.95);
+}
+
+[data-theme="dark"] {
+  --bg-primary: var(--color-charcoal);
+  --bg-secondary: #252525;
+  --bg-accent: #333333;
+  --text-primary: var(--color-cream);
+  --text-secondary: #e0cbb8;
+  --text-muted: #a89080;
+  --border-color: rgba(253, 246, 236, 0.1);
+  --card-bg: #333333;
+  --nav-bg: rgba(45, 45, 45, 0.95);
+}
+
+/* ===== BASE STYLES ===== */
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+  line-height: 1.7;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+  line-height: 1.2;
+  color: var(--text-primary);
+}
+
+/* ===== THEME-AWARE UTILITIES ===== */
+.bg-primary {
+  background-color: var(--bg-primary);
+}
+.bg-secondary {
+  background-color: var(--bg-secondary);
+}
+.bg-card {
+  background-color: var(--card-bg);
+}
+.text-primary {
+  color: var(--text-primary);
+}
+.text-secondary {
+  color: var(--text-secondary);
+}
+.text-muted {
+  color: var(--text-muted);
+}
+.border-theme {
+  border-color: var(--border-color);
+}
+.nav-bg {
+  background-color: var(--nav-bg);
+}
+
+/* ===== CARD HOVER EFFECT ===== */
+.card-hover {
+  transition: var(--transition-base);
+  box-shadow: var(--shadow-soft);
+}
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+/* ===== FOCUS STYLES ===== */
+:focus-visible {
+  outline: 2px solid var(--color-terracotta);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* ===== SELECTION STYLES ===== */
+::selection {
+  background-color: var(--color-blush);
+  color: var(--color-espresso);
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-terracotta);
+  border-radius: var(--radius-full);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-terracotta-dark);
+}
+
+/* ===== PROSE STYLES FOR BLOG ===== */
+.prose {
+  color: var(--text-primary);
+  max-width: 68ch;
+}
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4 {
+  font-family: var(--font-heading);
+  color: var(--text-primary);
+  margin-top: 2em;
+  margin-bottom: 0.75em;
+}
+.prose a {
+  color: var(--color-terracotta);
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  transition: text-decoration-color 0.2s ease;
+}
+.prose a:hover {
+  text-decoration-color: var(--color-terracotta);
+}
+.prose blockquote {
+  border-left: 3px solid var(--color-terracotta);
+  padding-left: 1.5rem;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+.prose code {
+  background: var(--bg-accent);
+  padding: 0.2em 0.4em;
+  border-radius: var(--radius-sm);
+  font-size: 0.875em;
+}
+.prose pre {
+  background: var(--bg-accent);
+  border-radius: var(--radius-base);
+  padding: 1.5rem;
+  overflow-x: auto;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease forwards;
+}

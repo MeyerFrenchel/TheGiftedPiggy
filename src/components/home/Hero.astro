@@ -1,0 +1,72 @@
+---
+import Button from "@components/ui/Button.astro";
+import { useTranslations } from "@i18n/utils";
+import { siteConfig } from "@data/site-config";
+import type { Lang } from "@i18n/ui";
+
+interface Props {
+  lang?: Lang;
+}
+
+const { lang = "ro" } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<section
+  class="relative overflow-hidden bg-gradient-to-br from-[var(--color-cream)] via-[var(--color-cream-dark)] to-[var(--color-blush)] py-20 md:py-32"
+  aria-label="Hero"
+>
+  <!-- Decorative circles -->
+  <div
+    class="absolute -top-20 -right-20 h-80 w-80 rounded-full bg-[var(--color-terracotta)] opacity-5 blur-3xl"
+    aria-hidden="true"
+  ></div>
+  <div
+    class="absolute -bottom-20 -left-20 h-80 w-80 rounded-full bg-[var(--color-sage)] opacity-5 blur-3xl"
+    aria-hidden="true"
+  ></div>
+
+  <div class="container relative mx-auto px-4 text-center">
+    <!-- Brand icon -->
+    <div
+      class="mb-6 inline-flex h-20 w-20 items-center justify-center rounded-full bg-[var(--color-blush)] text-5xl shadow-[var(--shadow-warm)]"
+      aria-hidden="true"
+    >
+      🐷
+    </div>
+
+    <!-- Tagline -->
+    <h1
+      class="mb-4 text-4xl font-bold text-primary md:text-6xl lg:text-7xl"
+      style="font-family: var(--font-heading);"
+    >
+      {siteConfig.name}
+    </h1>
+
+    <p class="mb-4 text-xl font-medium text-terracotta md:text-2xl" style="font-family: var(--font-heading);">
+      {t("hero.tagline")}
+    </p>
+
+    <p class="mx-auto mb-10 max-w-2xl text-base text-muted md:text-lg">
+      {t("hero.subtitle")}
+    </p>
+
+    <!-- CTAs -->
+    <div class="flex flex-wrap items-center justify-center gap-4">
+      <Button
+        href={lang === "en" ? "/en/products" : "/produse"}
+        variant="primary"
+        size="lg"
+      >
+        {t("hero.cta.products")}
+      </Button>
+      <Button
+        href={lang === "en" ? "/en/my-story" : "/povestea-mea"}
+        variant="outline"
+        size="lg"
+      >
+        {t("hero.cta.story")}
+      </Button>
+    </div>
+  </div>
+</section>

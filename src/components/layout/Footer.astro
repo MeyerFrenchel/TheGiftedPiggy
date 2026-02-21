@@ -1,0 +1,119 @@
+---
+import { siteConfig } from "@data/site-config";
+import { useTranslations } from "@i18n/utils";
+import { navItems } from "@data/navigation";
+import type { Lang } from "@i18n/ui";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="bg-secondary border-t border-theme mt-16">
+  <div class="container mx-auto px-4 py-12">
+    <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
+      <!-- Brand Column -->
+      <div class="space-y-4">
+        <a
+          href={lang === "en" ? "/en/" : "/"}
+          class="flex items-center gap-2 text-xl font-bold text-primary"
+          style="font-family: var(--font-heading);"
+        >
+          <span class="text-terracotta">🐷</span>
+          <span>{siteConfig.name}</span>
+        </a>
+        <p class="text-sm text-muted max-w-xs">
+          {t("footer.tagline")}
+        </p>
+        <!-- Social Links -->
+        <div class="flex items-center gap-3">
+          <a
+            href={siteConfig.contact.instagram}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-muted hover:text-terracotta transition-colors"
+            aria-label={t("contact.instagram")}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect>
+              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+              <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line>
+            </svg>
+          </a>
+          <a
+            href={siteConfig.contact.facebook}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-muted hover:text-terracotta transition-colors"
+            aria-label={t("contact.facebook")}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+            </svg>
+          </a>
+          <a
+            href={`mailto:${siteConfig.contact.email}`}
+            class="text-muted hover:text-terracotta transition-colors"
+            aria-label={t("contact.email")}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+              <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Quick Links -->
+      <div class="space-y-4">
+        <h3 class="font-semibold text-primary" style="font-family: var(--font-heading);">
+          {t("footer.links")}
+        </h3>
+        <ul class="space-y-2" role="list">
+          {
+            navItems.map((item) => (
+              <li>
+                <a
+                  href={item.href[lang]}
+                  class="text-sm text-muted hover:text-terracotta transition-colors"
+                >
+                  {t(item.labelKey)}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <!-- Contact -->
+      <div class="space-y-4">
+        <h3 class="font-semibold text-primary" style="font-family: var(--font-heading);">
+          {t("footer.contact")}
+        </h3>
+        <a
+          href={`mailto:${siteConfig.contact.email}`}
+          class="text-sm text-muted hover:text-terracotta transition-colors block"
+        >
+          {siteConfig.contact.email}
+        </a>
+        <p class="text-xs text-muted mt-4">
+          {t("footer.newsletterText")}
+        </p>
+      </div>
+    </div>
+
+    <!-- Bottom Bar -->
+    <div class="mt-10 flex flex-col items-center justify-between gap-2 border-t border-theme pt-6 text-xs text-muted md:flex-row">
+      <p>
+        &copy; {currentYear} {siteConfig.name}. {t("footer.rights")}.
+      </p>
+      <p>
+        {t("footer.madeWith")} ♥
+      </p>
+    </div>
+  </div>
+</footer>

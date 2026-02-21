@@ -1,0 +1,58 @@
+[
+  {
+    "id": "cos-cadou-primavara",
+    "name": "Coș Cadou Primăvară",
+    "nameEn": "Spring Gift Basket",
+    "description": "Un coș cadou plin cu produse naturale și handmade, perfect pentru a celebra primăvara și momentele speciale.",
+    "descriptionEn": "A gift basket filled with natural and handmade products, perfect for celebrating spring and special moments.",
+    "price": 150,
+    "currency": "RON",
+    "imageAlt": "Coș cadou de primăvară cu produse naturale",
+    "category": "Coșuri Cadou",
+    "tags": ["cadou", "primăvară", "natural", "handmade"],
+    "featured": true,
+    "inStock": true
+  },
+  {
+    "id": "lumanare-aromatica",
+    "name": "Lumânare Aromatică Handmade",
+    "nameEn": "Handmade Aromatic Candle",
+    "description": "Lumânare din ceară de soia cu parfum de vanilie și lemn de santal, turnată manual cu drag.",
+    "descriptionEn": "Soy wax candle with vanilla and sandalwood scent, hand-poured with love.",
+    "price": 45,
+    "currency": "RON",
+    "imageAlt": "Lumânare aromatică handmade din ceară de soia",
+    "category": "Lumânări",
+    "tags": ["lumânare", "aromatică", "soia", "handmade"],
+    "featured": true,
+    "inStock": true
+  },
+  {
+    "id": "sapun-natural",
+    "name": "Săpun Natural cu Lavandă",
+    "nameEn": "Natural Lavender Soap",
+    "description": "Săpun artizanal cu lavandă și ulei de shea, fără chimicale nocive, blând cu pielea.",
+    "descriptionEn": "Artisan lavender and shea butter soap, free of harmful chemicals, gentle on skin.",
+    "price": 25,
+    "currency": "RON",
+    "imageAlt": "Săpun natural artizanal cu lavandă",
+    "category": "Îngrijire",
+    "tags": ["săpun", "natural", "lavandă", "artizanal"],
+    "featured": false,
+    "inStock": true
+  },
+  {
+    "id": "cos-cadou-aniversar",
+    "name": "Coș Cadou Aniversar",
+    "nameEn": "Anniversary Gift Basket",
+    "description": "Coș cadou special pentru aniversări, cu produse premium selectate cu grijă pentru persoana iubită.",
+    "descriptionEn": "Special anniversary gift basket with premium products carefully selected for your loved one.",
+    "price": 220,
+    "currency": "RON",
+    "imageAlt": "Coș cadou aniversar cu produse premium",
+    "category": "Coșuri Cadou",
+    "tags": ["cadou", "aniversar", "premium", "special"],
+    "featured": true,
+    "inStock": true
+  }
+]

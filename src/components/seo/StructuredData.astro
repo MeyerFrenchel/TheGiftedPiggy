@@ -1,0 +1,161 @@
+---
+import { siteConfig } from "@data/site-config";
+import type { Lang } from "@i18n/ui";
+
+type SchemaType = "website" | "organization" | "blogPost" | "product" | "breadcrumb";
+
+interface BreadcrumbItem {
+  name: string;
+  url: string;
+}
+
+interface Props {
+  type: SchemaType;
+  lang?: Lang;
+  // Blog post props
+  title?: string;
+  description?: string;
+  pubDate?: Date;
+  updatedDate?: Date;
+  image?: string;
+  author?: string;
+  // Product props
+  productName?: string;
+  productDescription?: string;
+  productImage?: string;
+  productPrice?: number;
+  productCurrency?: string;
+  productAvailable?: boolean;
+  // Breadcrumb props
+  breadcrumbs?: BreadcrumbItem[];
+}
+
+const {
+  type,
+  lang = "ro",
+  title,
+  description,
+  pubDate,
+  updatedDate,
+  image,
+  author = siteConfig.author,
+  productName,
+  productDescription,
+  productImage,
+  productPrice,
+  productCurrency = "RON",
+  productAvailable = true,
+  breadcrumbs,
+} = Astro.props;
+
+const siteUrl = siteConfig.url;
+
+function buildSchema() {
+  switch (type) {
+    case "website":
+      return {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        name: siteConfig.name,
+        url: siteUrl,
+        description: siteConfig.description[lang],
+        potentialAction: {
+          "@type": "SearchAction",
+          target: {
+            "@type": "EntryPoint",
+            urlTemplate: `${siteUrl}/blog?q={search_term_string}`,
+          },
+          "query-input": "required name=search_term_string",
+        },
+      };
+
+    case "organization":
+      return {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        name: siteConfig.name,
+        url: siteUrl,
+        logo: `${siteUrl}/favicon.svg`,
+        description: siteConfig.description[lang],
+        contactPoint: {
+          "@type": "ContactPoint",
+          email: siteConfig.contact.email,
+          contactType: "customer service",
+          availableLanguage: ["Romanian", "English"],
+        },
+        sameAs: [siteConfig.contact.instagram, siteConfig.contact.facebook],
+      };
+
+    case "blogPost":
+      return {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        headline: title,
+        description: description,
+        image: image ? [new URL(image, siteUrl).href] : undefined,
+        datePublished: pubDate?.toISOString(),
+        dateModified: (updatedDate ?? pubDate)?.toISOString(),
+        author: {
+          "@type": "Person",
+          name: author,
+        },
+        publisher: {
+          "@type": "Organization",
+          name: siteConfig.name,
+          logo: {
+            "@type": "ImageObject",
+            url: `${siteUrl}/favicon.svg`,
+          },
+        },
+        mainEntityOfPage: {
+          "@type": "WebPage",
+          "@id": new URL(Astro.url.pathname, siteUrl).href,
+        },
+      };
+
+    case "product":
+      return {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        name: productName,
+        description: productDescription,
+        image: productImage ? [new URL(productImage, siteUrl).href] : undefined,
+        brand: {
+          "@type": "Brand",
+          name: siteConfig.name,
+        },
+        offers: {
+          "@type": "Offer",
+          price: productPrice,
+          priceCurrency: productCurrency,
+          availability: productAvailable
+            ? "https://schema.org/InStock"
+            : "https://schema.org/OutOfStock",
+          seller: {
+            "@type": "Organization",
+            name: siteConfig.name,
+          },
+        },
+      };
+
+    case "breadcrumb":
+      return {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        itemListElement: breadcrumbs?.map((item, index) => ({
+          "@type": "ListItem",
+          position: index + 1,
+          name: item.name,
+          item: new URL(item.url, siteUrl).href,
+        })),
+      };
+
+    default:
+      return null;
+  }
+}
+
+const schema = buildSchema();
+---
+
+{schema && <script type="application/ld+json" set:html={JSON.stringify(schema, null, 2)} />}

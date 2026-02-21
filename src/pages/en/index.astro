@@ -1,0 +1,29 @@
+---
+import PageLayout from "@layouts/PageLayout.astro";
+import Hero from "@components/home/Hero.astro";
+import FeaturedProducts from "@components/home/FeaturedProducts.astro";
+import LatestPosts from "@components/home/LatestPosts.astro";
+import StructuredData from "@components/seo/StructuredData.astro";
+import { getCollection } from "astro:content";
+import { siteConfig } from "@data/site-config";
+
+const lang = "en";
+
+const allProducts = await getCollection("products");
+const allPosts = await getCollection("blog", ({ data }) => !data.draft && data.lang === "en");
+const sortedPosts = allPosts.sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+---
+
+<PageLayout
+  lang={lang}
+  title={undefined}
+  description={siteConfig.description.en}
+  structuredDataType="website"
+>
+  <StructuredData type="website" {lang} slot="head" />
+  <Hero {lang} />
+  <FeaturedProducts products={allProducts} {lang} />
+  <LatestPosts posts={sortedPosts} {lang} />
+</PageLayout>

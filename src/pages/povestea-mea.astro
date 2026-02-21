@@ -1,0 +1,55 @@
+---
+import PageLayout from "@layouts/PageLayout.astro";
+import SectionHeading from "@components/ui/SectionHeading.astro";
+import { useTranslations } from "@i18n/utils";
+
+const lang = "ro";
+const t = useTranslations(lang);
+---
+
+<PageLayout
+  title={t("story.title")}
+  description={t("story.subtitle")}
+  lang={lang}
+>
+  <div class="container mx-auto max-w-3xl px-4 py-12">
+    <SectionHeading
+      title={t("story.title")}
+      subtitle={t("story.subtitle")}
+      align="left"
+      as="h1"
+    />
+
+    <div class="prose prose-lg">
+      <p>
+        Bună! Sunt creatoarea din spatele <strong>The Gifted Piggy</strong> — un mic atelier de
+        suflet unde fiecare cadou este creat cu drag și dedicație.
+      </p>
+
+      <h2>Cum a început totul</h2>
+      <p>
+        Pasiunea mea pentru lucrurile handmade a început de mică, când bunica mă învăța să tricotez
+        și să brodez. De-a lungul anilor, această pasiune s-a transformat într-o adevărată artă:
+        crearea de cadouri unice, personalizate, care să aducă bucurie celor dragi.
+      </p>
+
+      <h2>De ce handmade?</h2>
+      <p>
+        Într-o lume plină de produse de serie, un cadou handmade spune <em>"m-am gândit la tine"</em>.
+        Fiecare piesă pe care o creez este unică — nu vei găsi două identice. Pun suflet în fiecare
+        detaliu, de la alegerea materialelor până la ambalare.
+      </p>
+
+      <h2>Ce creez</h2>
+      <p>
+        Coșuri cadou personalizate, lumânări aromate, produse de îngrijire naturale și multe alte
+        surprize frumoase. Dacă ai o idee sau un eveniment special, mă poți contacta pentru un cadou
+        creat special pentru tine.
+      </p>
+
+      <p>
+        Mulțumesc că ești parte din povestea The Gifted Piggy! 🐷
+      </p>
+    </div>
+  </div>
+</PageLayout>

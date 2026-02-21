@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:www.sanity.io)",
+      "WebFetch(domain:www.npmjs.com)",
+      "Bash(cd \"E:/Programare/the-gifted-piggy\" && npm create astro@latest . -- --template minimal --no-install 2>&1)",
+      "Bash(echo npm not found in PATH:*)",
+      "Bash(npm:*)",
+      "Bash(cmd.exe:*)",
+      "Bash(echo No node-related entries in PATH:*)",
+      "Bash(tr ;:*)",
+      "Bash(powershell.exe:*)",
+      "Bash(\"/e/software/cursor/resources/app/resources/helpers/node.exe\":*)"
+    ]
+  }
+}

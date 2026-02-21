@@ -1,0 +1,78 @@
+---
+import "@styles/global.css";
+import SEOHead from "@components/seo/SEOHead.astro";
+import StructuredData from "@components/seo/StructuredData.astro";
+import { siteConfig } from "@data/site-config";
+import type { Lang } from "@i18n/ui";
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  type?: "website" | "article";
+  lang?: Lang;
+  noindex?: boolean;
+  canonicalURL?: string;
+  structuredDataType?: "website" | "organization" | "blogPost" | "product" | "breadcrumb";
+}
+
+const {
+  title,
+  description,
+  image,
+  type = "website",
+  lang = "ro",
+  noindex = false,
+  canonicalURL,
+  structuredDataType,
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang={lang} data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <!-- Font Preloads -->
+    <link
+      rel="preload"
+      href="/fonts/PlayfairDisplay-Bold.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/Nunito-Regular.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+
+    <!-- SEO -->
+    <SEOHead {title} {description} {image} {type} {lang} {noindex} {canonicalURL} />
+
+    <!-- Structured Data -->
+    {structuredDataType && <StructuredData type={structuredDataType} {lang} {title} {description} />}
+    <StructuredData type="organization" {lang} />
+
+    <!-- Theme initialization - prevent flash of wrong theme -->
+    <script is:inline>
+      (function () {
+        const saved = localStorage.getItem("theme");
+        const system = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+        const theme = saved || system;
+        document.documentElement.setAttribute("data-theme", theme);
+      })();
+    </script>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

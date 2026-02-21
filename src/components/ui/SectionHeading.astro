@@ -1,0 +1,33 @@
+---
+interface Props {
+  title: string;
+  subtitle?: string;
+  align?: "left" | "center" | "right";
+  as?: "h1" | "h2" | "h3";
+  class?: string;
+}
+
+const { title, subtitle, align = "center", as: Tag = "h2", class: className } = Astro.props;
+
+const alignments = {
+  left: "text-left",
+  center: "text-center",
+  right: "text-right",
+};
+---
+
+<div class:list={["mb-10", alignments[align], className]}>
+  <Tag
+    class="text-3xl font-bold text-primary md:text-4xl"
+    style="font-family: var(--font-heading);"
+  >
+    {title}
+  </Tag>
+  {
+    subtitle && (
+      <p class="mt-3 text-base text-muted md:text-lg max-w-2xl" class:list={align === "center" && "mx-auto"}>
+        {subtitle}
+      </p>
+    )
+  }
+</div>
