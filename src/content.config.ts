@@ -29,7 +29,7 @@ const products = defineCollection({
       descriptionEn: z.string(),
       price: z.number(),
       currency: z.string().default("RON"),
-      image: image().optional(),
+      image: z.string().optional(),
       imageAlt: z.string(),
       category: z.string(),
       tags: z.array(z.string()).default([]),

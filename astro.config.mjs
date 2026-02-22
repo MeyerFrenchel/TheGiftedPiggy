@@ -6,6 +6,9 @@ import robotsTxt from "astro-robots-txt";
 import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
+  server: {
+    host: true,
+  },
   output: "static",
   site: "https://thegiftedpiggy.com",
   integrations: [

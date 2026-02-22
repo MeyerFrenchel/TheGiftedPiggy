@@ -13,60 +13,224 @@ const t = useTranslations(lang);
 ---
 
 <section
-  class="relative overflow-hidden bg-gradient-to-br from-[var(--color-cream)] via-[var(--color-cream-dark)] to-[var(--color-blush)] py-20 md:py-32"
+  class="relative overflow-hidden py-16 md:py-24"
+  style="background: #faf8ff;"
   aria-label="Hero"
 >
-  <!-- Decorative circles -->
-  <div
-    class="absolute -top-20 -right-20 h-80 w-80 rounded-full bg-[var(--color-terracotta)] opacity-5 blur-3xl"
-    aria-hidden="true"
-  ></div>
-  <div
-    class="absolute -bottom-20 -left-20 h-80 w-80 rounded-full bg-[var(--color-sage)] opacity-5 blur-3xl"
-    aria-hidden="true"
-  ></div>
+  <!-- ===== WATERCOLOR BACKGROUND ===== -->
+  <div class="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
 
-  <div class="container relative mx-auto px-4 text-center">
-    <!-- Brand icon -->
+    <!-- SVG filter: paper grain texture -->
+    <svg class="absolute h-0 w-0">
+      <defs>
+        <filter id="wc-grain" x="0%" y="0%" width="100%" height="100%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.72" numOctaves="4" stitchTiles="stitch" result="noise"/>
+          <feColorMatrix type="saturate" values="0" in="noise" result="grayNoise"/>
+          <feBlend in="SourceGraphic" in2="grayNoise" mode="multiply" result="blended"/>
+          <feComponentTransfer in="blended">
+            <feFuncA type="linear" slope="1"/>
+          </feComponentTransfer>
+        </filter>
+      </defs>
+    </svg>
+
+    <!-- Blue pool — top left -->
     <div
-      class="mb-6 inline-flex h-20 w-20 items-center justify-center rounded-full bg-[var(--color-blush)] text-5xl shadow-[var(--shadow-warm)]"
-      aria-hidden="true"
-    >
-      🐷
-    </div>
+      class="absolute rounded-full"
+      style="
+        width: 560px; height: 520px;
+        top: -120px; left: -100px;
+        background: radial-gradient(ellipse, #93c5fd 0%, #bfdbfe 55%, transparent 80%);
+        opacity: 0.55;
+        filter: blur(72px);
+      "
+    ></div>
 
-    <!-- Tagline -->
-    <h1
-      class="mb-4 text-4xl font-bold text-primary md:text-6xl lg:text-7xl"
-      style="font-family: var(--font-heading);"
-    >
-      {siteConfig.name}
-    </h1>
+    <!-- Lavender pool — top center -->
+    <div
+      class="absolute rounded-full"
+      style="
+        width: 480px; height: 420px;
+        top: -60px; left: 30%;
+        background: radial-gradient(ellipse, #c4b5f4 0%, #ddd6fe 60%, transparent 85%);
+        opacity: 0.60;
+        filter: blur(80px);
+      "
+    ></div>
 
-    <p class="mb-4 text-xl font-medium text-terracotta md:text-2xl" style="font-family: var(--font-heading);">
-      {t("hero.tagline")}
-    </p>
+    <!-- Pink pool — top right -->
+    <div
+      class="absolute rounded-full"
+      style="
+        width: 500px; height: 460px;
+        top: -80px; right: -80px;
+        background: radial-gradient(ellipse, #f9a8d4 0%, #fce7f3 60%, transparent 85%);
+        opacity: 0.55;
+        filter: blur(70px);
+      "
+    ></div>
 
-    <p class="mx-auto mb-10 max-w-2xl text-base text-muted md:text-lg">
-      {t("hero.subtitle")}
-    </p>
+    <!-- Rose pool — center right -->
+    <div
+      class="absolute rounded-full"
+      style="
+        width: 380px; height: 340px;
+        top: 35%; right: 5%;
+        background: radial-gradient(ellipse, #fda4af 0%, #fecdd3 60%, transparent 85%);
+        opacity: 0.40;
+        filter: blur(65px);
+      "
+    ></div>
 
-    <!-- CTAs -->
-    <div class="flex flex-wrap items-center justify-center gap-4">
-      <Button
-        href={lang === "en" ? "/en/products" : "/produse"}
-        variant="primary"
-        size="lg"
-      >
-        {t("hero.cta.products")}
-      </Button>
-      <Button
-        href={lang === "en" ? "/en/my-story" : "/povestea-mea"}
-        variant="outline"
-        size="lg"
-      >
-        {t("hero.cta.story")}
-      </Button>
+    <!-- Lilac pool — bottom left -->
+    <div
+      class="absolute rounded-full"
+      style="
+        width: 420px; height: 380px;
+        bottom: -60px; left: -60px;
+        background: radial-gradient(ellipse, #ddd6fe 0%, #ede9fe 60%, transparent 85%);
+        opacity: 0.50;
+        filter: blur(75px);
+      "
+    ></div>
+
+    <!-- Blush pool — bottom center -->
+    <div
+      class="absolute rounded-full"
+      style="
+        width: 360px; height: 320px;
+        bottom: -40px; left: 35%;
+        background: radial-gradient(ellipse, #f9a8d4 0%, #fce7f3 65%, transparent 85%);
+        opacity: 0.38;
+        filter: blur(68px);
+      "
+    ></div>
+
+    <!-- Paper grain overlay -->
+    <div
+      class="absolute inset-0"
+      style="
+        background-image: url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E\");
+        opacity: 0.35;
+        mix-blend-mode: multiply;
+      "
+    ></div>
+  </div>
+
+  <div class="container relative mx-auto px-4">
+    <div class="flex flex-col items-center gap-10 md:flex-row md:gap-12 lg:gap-20">
+
+      <!-- Left: Text Content -->
+      <div class="flex-1 text-center md:text-left animate-fade-in-up">
+
+        <!-- Badge -->
+        <div
+          class="mb-5 inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-sm font-semibold"
+          style="background: var(--color-purple-light); color: var(--color-purple-dark);"
+        >
+          ✨ Handmade with love · Made in România
+        </div>
+
+        <!-- Title -->
+        <h1
+          class="mb-3 text-4xl font-bold md:text-5xl lg:text-6xl"
+          style="font-family: var(--font-heading); color: var(--color-espresso);"
+        >
+          {siteConfig.name}
+        </h1>
+
+        <!-- Tagline -->
+        <p
+          class="mb-4 text-2xl md:text-3xl"
+          style="font-family: var(--font-accent); color: var(--color-purple);"
+        >
+          {t("hero.tagline")}
+        </p>
+
+        <!-- Subtitle -->
+        <p class="mx-auto mb-8 max-w-lg text-base md:mx-0 md:text-lg" style="color: var(--text-secondary);">
+          {t("hero.subtitle")}
+        </p>
+
+        <!-- CTAs -->
+        <div class="flex flex-wrap items-center justify-center gap-4 md:justify-start">
+          <Button
+            href={lang === "en" ? "/en/products" : "/produse"}
+            variant="primary"
+            size="lg"
+          >
+            {t("hero.cta.products")}
+          </Button>
+          <Button
+            href={lang === "en" ? "/en/my-story" : "/povestea-mea"}
+            variant="outline"
+            size="lg"
+          >
+            {t("hero.cta.story")}
+          </Button>
+        </div>
+
+        <!-- Trust badges -->
+        <div
+          class="mt-10 flex flex-wrap items-center justify-center gap-6 md:justify-start"
+        >
+          <div class="flex items-center gap-2 text-sm font-medium" style="color: var(--text-muted);">
+            <span
+              class="flex h-8 w-8 items-center justify-center rounded-full text-base"
+              style="background: var(--color-purple-light);"
+            >🎨</span>
+            100% Handmade
+          </div>
+          <div class="flex items-center gap-2 text-sm font-medium" style="color: var(--text-muted);">
+            <span
+              class="flex h-8 w-8 items-center justify-center rounded-full text-base"
+              style="background: var(--color-blush);"
+            >✏️</span>
+            Pe comandă
+          </div>
+          <div class="flex items-center gap-2 text-sm font-medium" style="color: var(--text-muted);">
+            <span
+              class="flex h-8 w-8 items-center justify-center rounded-full text-base"
+              style="background: var(--color-purple-light);"
+            >💜</span>
+            Cu drag & suflet
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Artist image -->
+      <div class="flex flex-1 items-center justify-center animate-fade-in">
+        <div class="relative">
+          <!-- Glow ring behind image -->
+          <div
+            class="absolute inset-0 scale-105 rounded-3xl opacity-40 blur-2xl"
+            style="background: linear-gradient(135deg, var(--color-purple), var(--color-pink));"
+            aria-hidden="true"
+          ></div>
+          <!-- Decorative dot pattern -->
+          <div
+            class="absolute -top-4 -right-4 h-24 w-24 rounded-full opacity-30"
+            style="background: radial-gradient(circle, var(--color-pink) 1.5px, transparent 1.5px) 0 0 / 10px 10px;"
+            aria-hidden="true"
+          ></div>
+          <div
+            class="absolute -bottom-4 -left-4 h-24 w-24 rounded-full opacity-30"
+            style="background: radial-gradient(circle, var(--color-purple) 1.5px, transparent 1.5px) 0 0 / 10px 10px;"
+            aria-hidden="true"
+          ></div>
+
+          <img
+            src="/images/hero-artist.jpg"
+            alt="Creatoarea The Gifted Piggy lucrând la creații handmade din lut"
+            width="520"
+            height="520"
+            class="relative rounded-3xl object-cover"
+            style="box-shadow: 0 20px 60px rgba(126, 91, 206, 0.25);"
+            loading="eager"
+          />
+        </div>
+      </div>
+
     </div>
   </div>
 </section>

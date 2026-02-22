@@ -1,5 +1,4 @@
 ---
-import { Image } from "astro:assets";
 import Badge from "@components/ui/Badge.astro";
 import { useTranslations } from "@i18n/utils";
 import type { Lang } from "@i18n/ui";
@@ -31,7 +30,7 @@ const formattedPrice = new Intl.NumberFormat("ro-RO", {
   <div class="relative overflow-hidden aspect-square">
     {
       image ? (
-        <Image
+        <img
           src={image}
           alt={imageAlt}
           width={400}

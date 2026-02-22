@@ -4,28 +4,44 @@
 @theme {
   /* ===== COLORS ===== */
   --color-cream: #fdf6ec;
-  --color-cream-dark: #f5e6d0;
-  --color-espresso: #3c2415;
-  --color-terracotta: #c67b5c;
-  --color-terracotta-dark: #a85d3f;
-  --color-sage: #8fae8b;
-  --color-sage-dark: #6e8e6a;
+  --color-cream-dark: #f0e8f5;
+  --color-espresso: #2a1a3e;
+  /* Purple — primary brand color (wife's favorite) */
+  --color-purple: #7e5bce;
+  --color-purple-dark: #5d3fa8;
+  --color-purple-light: #ede6f8;
+  /* Pink — secondary accent (daughter's favorite) */
+  --color-pink: #e879a8;
+  --color-pink-dark: #c45a88;
+  --color-blush: #fce4ec;
+  /* Sage green — tertiary accent (husband's favorite) */
+  --color-sage: #6ab187;
+  --color-sage-dark: #4d8a6a;
+  /* Warm gray — husband's other preference */
+  --color-gray: #6b7280;
+  --color-gray-light: #f3f4f6;
+  /* Gold — for featured/premium items */
   --color-gold: #d4a853;
   --color-gold-dark: #b8903d;
-  --color-blush: #f2d1c9;
-  --color-charcoal: #2d2d2d;
-  --color-charcoal-light: #3d3d3d;
-  --color-ivory: #faf7f2;
+  /* Charcoal for dark mode */
+  --color-charcoal: #1a1025;
+  --color-charcoal-light: #2d1f40;
+  --color-ivory: #faf7ff;
 
   /* ===== TYPOGRAPHY ===== */
-  --font-heading: "Playfair Display", Georgia, serif;
-  --font-body: "Nunito", "Segoe UI", system-ui, sans-serif;
+  /* Cormorant Garamond — UI, nav, buttons, headings, product titles */
+  --font-heading: "Cormorant Garamond", Georgia, serif;
+  --font-body: "Cormorant Garamond", Georgia, serif;
+  /* Lora — long-form prose: blog posts, povestea mea */
+  --font-prose: "Lora", Georgia, serif;
+  /* Dancing Script — accent: taglines, pull quotes, small emotional moments */
+  --font-accent: "Dancing Script", cursive;
 
   /* ===== SHADOWS ===== */
-  --shadow-soft: 0 2px 8px rgba(60, 36, 21, 0.08);
-  --shadow-md: 0 4px 16px rgba(60, 36, 21, 0.12);
-  --shadow-lg: 0 8px 32px rgba(60, 36, 21, 0.16);
-  --shadow-warm: 0 4px 12px rgba(198, 123, 92, 0.15);
+  --shadow-soft: 0 2px 8px rgba(126, 91, 206, 0.08);
+  --shadow-md: 0 4px 16px rgba(126, 91, 206, 0.14);
+  --shadow-lg: 0 8px 32px rgba(126, 91, 206, 0.18);
+  --shadow-warm: 0 4px 12px rgba(232, 121, 168, 0.2);
 
   /* ===== BORDER RADIUS ===== */
   --radius-sm: 6px;
@@ -43,25 +59,75 @@
 [data-theme="light"] {
   --bg-primary: var(--color-cream);
   --bg-secondary: var(--color-ivory);
-  --bg-accent: var(--color-cream-dark);
+  --bg-accent: var(--color-purple-light);
   --text-primary: var(--color-espresso);
-  --text-secondary: #6b4c36;
-  --text-muted: #9d7a63;
-  --border-color: rgba(60, 36, 21, 0.1);
+  --text-secondary: #4a3560;
+  --text-muted: #7c6a95;
+  --border-color: rgba(126, 91, 206, 0.12);
   --card-bg: var(--color-ivory);
   --nav-bg: rgba(253, 246, 236, 0.95);
+  /* Semantic accent aliases */
+  --color-accent: var(--color-purple);
+  --color-accent-dark: var(--color-purple-dark);
+  --color-accent-light: var(--color-purple-light);
+  --color-highlight: var(--color-pink);
 }
 
 [data-theme="dark"] {
   --bg-primary: var(--color-charcoal);
-  --bg-secondary: #252525;
-  --bg-accent: #333333;
+  --bg-secondary: #221535;
+  --bg-accent: var(--color-charcoal-light);
   --text-primary: var(--color-cream);
-  --text-secondary: #e0cbb8;
-  --text-muted: #a89080;
-  --border-color: rgba(253, 246, 236, 0.1);
-  --card-bg: #333333;
-  --nav-bg: rgba(45, 45, 45, 0.95);
+  --text-secondary: #d4bfef;
+  --text-muted: #9a85b8;
+  --border-color: rgba(126, 91, 206, 0.2);
+  --card-bg: #2d1f40;
+  --nav-bg: rgba(26, 16, 37, 0.95);
+  --color-accent: var(--color-purple);
+  --color-accent-dark: var(--color-purple-dark);
+  --color-accent-light: var(--color-charcoal-light);
+  --color-highlight: var(--color-pink);
+}
+
+/* ===== SEASONAL THEMES ===== */
+/* Spring — Mărțișoare season: soft lavender, floral pink, fresh sage */
+[data-season="spring"] {
+  --color-accent: #9b6dce;
+  --color-accent-dark: #7550a8;
+  --color-accent-light: #f0e6ff;
+  --color-highlight: #e879a8;
+  --bg-primary: #fdf8ff;
+  --bg-secondary: #f5eeff;
+}
+
+/* Summer — bright, warm, joyful */
+[data-season="summer"] {
+  --color-accent: #0ea5a0;
+  --color-accent-dark: #0b7a77;
+  --color-accent-light: #e0faf9;
+  --color-highlight: #f97316;
+  --bg-primary: #fdfff5;
+  --bg-secondary: #f0fff4;
+}
+
+/* Autumn — amber, rust, warm purple */
+[data-season="autumn"] {
+  --color-accent: #9b4dca;
+  --color-accent-dark: #722fa8;
+  --color-accent-light: #f5eaff;
+  --color-highlight: #d97706;
+  --bg-primary: #fdf8f0;
+  --bg-secondary: #fef3e2;
+}
+
+/* Winter / Christmas — deep purple, silver, pine green */
+[data-season="winter"] {
+  --color-accent: #5b2d8e;
+  --color-accent-dark: #3d1a66;
+  --color-accent-light: #ede0ff;
+  --color-highlight: #dc2626;
+  --bg-primary: #f8f4ff;
+  --bg-secondary: #eee6ff;
 }
 
 /* ===== BASE STYLES ===== */
@@ -75,6 +141,8 @@ body {
   background-color: var(--bg-primary);
   color: var(--text-primary);
   font-family: var(--font-body);
+  font-size: 1.125rem;
+  font-weight: 500;
   transition:
     background-color 0.3s ease,
     color 0.3s ease;
@@ -130,14 +198,14 @@ h6 {
 
 /* ===== FOCUS STYLES ===== */
 :focus-visible {
-  outline: 2px solid var(--color-terracotta);
+  outline: 2px solid var(--color-purple);
   outline-offset: 2px;
   border-radius: var(--radius-sm);
 }
 
 /* ===== SELECTION STYLES ===== */
 ::selection {
-  background-color: var(--color-blush);
+  background-color: var(--color-purple-light);
   color: var(--color-espresso);
 }
 
@@ -149,17 +217,21 @@ h6 {
   background: var(--bg-secondary);
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--color-terracotta);
+  background: var(--color-purple);
   border-radius: var(--radius-full);
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-terracotta-dark);
+  background: var(--color-purple-dark);
 }
 
 /* ===== PROSE STYLES FOR BLOG ===== */
 .prose {
   color: var(--text-primary);
   max-width: 68ch;
+  font-family: var(--font-prose);
+  font-size: 1.175rem;
+  font-weight: 400;
+  line-height: 1.9;
 }
 .prose h1,
 .prose h2,
@@ -171,16 +243,16 @@ h6 {
   margin-bottom: 0.75em;
 }
 .prose a {
-  color: var(--color-terracotta);
+  color: var(--color-purple);
   text-decoration: underline;
   text-decoration-color: transparent;
   transition: text-decoration-color 0.2s ease;
 }
 .prose a:hover {
-  text-decoration-color: var(--color-terracotta);
+  text-decoration-color: var(--color-purple);
 }
 .prose blockquote {
-  border-left: 3px solid var(--color-terracotta);
+  border-left: 3px solid var(--color-purple);
   padding-left: 1.5rem;
   color: var(--text-secondary);
   font-style: italic;

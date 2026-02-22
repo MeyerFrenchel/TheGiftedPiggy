@@ -134,7 +134,7 @@ export default function MobileMenu({ lang, currentPath }: Props) {
                     href={item.href}
                     onClick={close}
                     aria-current={isActive ? "page" : undefined}
-                    className={`block rounded-lg px-4 py-3 text-base font-medium transition-colors ${
+                    className={`block rounded-lg px-4 py-3 text-xl font-bold tracking-wide transition-colors ${
                       isActive
                         ? "bg-[var(--color-blush)] text-[var(--color-terracotta)]"
                         : "text-[var(--text-secondary)] hover:bg-[var(--bg-accent)] hover:text-[var(--color-terracotta)]"
