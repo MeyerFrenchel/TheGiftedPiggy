@@ -4,20 +4,26 @@ import ProductCard from "@components/products/ProductCard.astro";
 import Button from "@components/ui/Button.astro";
 import { useTranslations } from "@i18n/utils";
 import type { Lang } from "@i18n/ui";
-import type { CollectionEntry } from "astro:content";
+import { createServiceClient } from "@lib/supabase";
 
 interface Props {
-  products: CollectionEntry<"products">[];
   lang?: Lang;
 }
 
-const { products, lang = "ro" } = Astro.props;
+const { lang = "ro" } = Astro.props;
 const t = useTranslations(lang);
-const featured = products.filter((p) => p.data.featured).slice(0, 4);
+
+const supabase = createServiceClient();
+const { data: featured } = await supabase
+  .from("products")
+  .select("*")
+  .eq("featured", true)
+  .eq("in_stock", true)
+  .limit(4);
 ---
 
 {
-  featured.length > 0 && (
+  (featured ?? []).length > 0 && (
     <section class="py-16" aria-label={t("products.featured")}>
       <div class="container mx-auto px-4">
         <SectionHeading
@@ -25,7 +31,7 @@ const featured = products.filter((p) => p.data.featured).slice(0, 4);
           subtitle={t("products.subtitle")}
         />
         <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {featured.map((product) => (
+          {(featured ?? []).map((product) => (
             <ProductCard {product} {lang} />
           ))}
         </div>

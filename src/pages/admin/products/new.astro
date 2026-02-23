@@ -1,0 +1,37 @@
+---
+export const prerender = false;
+
+import AdminLayout from '@layouts/AdminLayout.astro';
+import AdminProductForm from '@components/admin/AdminProductForm.astro';
+import { createSSRClient } from '@lib/supabase';
+import { parseProductFormData, createProduct } from '@lib/products';
+
+let errorMsg = '';
+
+const supabase = createSSRClient({ request: Astro.request, cookies: Astro.cookies });
+
+const { data: { session } } = await supabase.auth.getSession();
+const accessToken = session?.access_token ?? '';
+const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL;
+
+if (Astro.request.method === 'POST') {
+  const form = await Astro.request.formData();
+  const result = await createProduct(supabase, parseProductFormData(form));
+  if (!result.success) {
+    errorMsg = result.error;
+  } else {
+    return Astro.redirect('/admin/products');
+  }
+}
+---
+
+<AdminLayout title="New Product">
+  {errorMsg && (
+    <div style="background:#fee2e2;color:#dc2626;padding:0.75rem 1rem;border-radius:6px;margin-bottom:1rem;font-size:0.875rem;">
+      {errorMsg}
+    </div>
+  )}
+  <div style="background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:1.5rem;">
+    <AdminProductForm {accessToken} {supabaseUrl} />
+  </div>
+</AdminLayout>

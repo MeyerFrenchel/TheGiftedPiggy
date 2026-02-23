@@ -4,17 +4,24 @@ import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
 import robotsTxt from "astro-robots-txt";
 import tailwindcss from "@tailwindcss/vite";
+import node from "@astrojs/node";
+import { fileURLToPath } from "url";
+import path from "path";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
   server: {
     host: true,
   },
   output: "static",
+  adapter: node({ mode: "standalone" }),
   site: "https://thegiftedpiggy.com",
   integrations: [
     react(),
     mdx(),
     sitemap({
+      filter: (page) => !page.includes("/admin/"),
       i18n: {
         defaultLocale: "ro",
         locales: {
@@ -29,6 +36,11 @@ export default defineConfig({
   ],
   vite: {
     plugins: [tailwindcss()],
+    resolve: {
+      alias: {
+        "@lib": path.resolve(__dirname, "src/lib"),
+      },
+    },
   },
   image: {
     service: {

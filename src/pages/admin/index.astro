@@ -1,0 +1,67 @@
+---
+export const prerender = false;
+
+import AdminLayout from '@layouts/AdminLayout.astro';
+import { createSSRClient } from '@lib/supabase';
+
+const supabase = createSSRClient({ request: Astro.request, cookies: Astro.cookies });
+
+const [
+  { count: totalCount },
+  { count: featuredCount },
+  { count: outOfStockCount },
+] = await Promise.all([
+  supabase.from('products').select('*', { count: 'exact', head: true }),
+  supabase.from('products').select('*', { count: 'exact', head: true }).eq('featured', true),
+  supabase.from('products').select('*', { count: 'exact', head: true }).eq('in_stock', false),
+]);
+---
+
+<AdminLayout title="Dashboard">
+  <style>
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .stat-card {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 1.25rem 1.5rem;
+    }
+    .stat-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #6b7280; font-weight: 600; }
+    .stat-value { font-size: 2rem; font-weight: 700; color: #1e1b2e; margin-top: 0.375rem; }
+    .quick-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.625rem 1.25rem;
+      background: #8b5cf6;
+      color: #fff;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+    .quick-link:hover { background: #7c3aed; }
+  </style>
+
+  <div class="stats">
+    <div class="stat-card">
+      <div class="stat-label">Total Products</div>
+      <div class="stat-value">{totalCount ?? 0}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Featured</div>
+      <div class="stat-value">{featuredCount ?? 0}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Out of Stock</div>
+      <div class="stat-value">{outOfStockCount ?? 0}</div>
+    </div>
+  </div>
+
+  <a href="/admin/products/new" class="quick-link">+ Add New Product</a>
+</AdminLayout>

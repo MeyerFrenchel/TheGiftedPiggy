@@ -14,20 +14,15 @@ const { lang } = Astro.props;
 const currentPath = Astro.url.pathname;
 ---
 
-<header
-  class="nav-bg sticky top-0 z-50 border-b border-theme backdrop-blur-sm"
-  id="site-header"
->
+<header class="nav-bg border-theme sticky top-0 z-50 border-b backdrop-blur-sm" id="site-header">
   <div class="container mx-auto flex items-center justify-between px-4 py-5">
     <!-- Logo -->
     <a
       href={lang === "en" ? "/en/" : "/"}
-      class="flex items-center gap-2 text-2xl font-bold tracking-wide text-primary transition-opacity hover:opacity-80"
-      style="font-family: var(--font-heading);"
+      class="flex items-center transition-opacity hover:opacity-80"
       aria-label={siteConfig.name}
     >
-      <span class="text-terracotta">🐷</span>
-      <span>{siteConfig.name}</span>
+      <img src="/tgp-logo.png" alt={siteConfig.name} class="w-36" />
     </a>
 
     <!-- Desktop Navigation -->

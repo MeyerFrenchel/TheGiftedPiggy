@@ -2,19 +2,19 @@
 import Badge from "@components/ui/Badge.astro";
 import { useTranslations } from "@i18n/utils";
 import type { Lang } from "@i18n/ui";
-import type { CollectionEntry } from "astro:content";
+import type { Tables } from "@lib/database.types";
 
 interface Props {
-  product: CollectionEntry<"products">;
+  product: Tables<"products">;
   lang?: Lang;
 }
 
 const { product, lang = "ro" } = Astro.props;
 const t = useTranslations(lang);
 
-const name = lang === "en" ? product.data.nameEn : product.data.name;
-const description = lang === "en" ? product.data.descriptionEn : product.data.description;
-const { price, currency, image, imageAlt, category, inStock, featured } = product.data;
+const name = lang === "en" ? (product.name_en ?? product.name) : product.name;
+const description = lang === "en" ? (product.description_en ?? product.description) : product.description;
+const { price, currency, image_url, image_alt, category, in_stock, featured } = product;
 
 const formattedPrice = new Intl.NumberFormat("ro-RO", {
   style: "currency",
@@ -29,10 +29,10 @@ const formattedPrice = new Intl.NumberFormat("ro-RO", {
   <!-- Product Image -->
   <div class="relative overflow-hidden aspect-square">
     {
-      image ? (
+      image_url ? (
         <img
-          src={image}
-          alt={imageAlt}
+          src={image_url}
+          alt={image_alt ?? name}
           width={400}
           height={400}
           class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
@@ -49,7 +49,7 @@ const formattedPrice = new Intl.NumberFormat("ro-RO", {
         <Badge variant="gold">★ Featured</Badge>
       </div>
     )}
-    {!inStock && (
+    {!in_stock && (
       <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
         <Badge variant="default" class="text-sm">{t("products.outOfStock")}</Badge>
       </div>
@@ -75,7 +75,7 @@ const formattedPrice = new Intl.NumberFormat("ro-RO", {
     <div class="mt-auto flex items-center justify-between">
       <span class="text-lg font-bold text-terracotta">{formattedPrice}</span>
       <span class="text-xs text-muted">
-        {inStock ? t("products.inStock") : t("products.outOfStock")}
+        {in_stock ? t("products.inStock") : t("products.outOfStock")}
       </span>
     </div>
   </div>

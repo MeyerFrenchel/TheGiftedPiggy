@@ -1,0 +1,375 @@
+---
+import ImageUpload from "./ImageUpload";
+import type { Tables } from "@lib/database.types";
+
+interface Props {
+  product?: Tables<"products">;
+  accessToken?: string;
+  supabaseUrl?: string;
+}
+
+const { product, accessToken = "", supabaseUrl = "" } = Astro.props;
+const isEdit = !!product;
+
+const categories = [
+  "cani-personalizate",
+  "martisoare",
+  "semne-de-carte",
+  "tablouri",
+  "ornamente-craciun",
+];
+
+const categoryLabels: Record<string, string> = {
+  "cani-personalizate": "Căni Personalizate",
+  martisoare: "Mărțișoare",
+  "semne-de-carte": "Semne de Carte",
+  tablouri: "Tablouri",
+  "ornamente-craciun": "Ornamente de Crăciun",
+};
+
+const tagSuggestions: Record<string, string[]> = {
+  "cani-personalizate": [
+    "profesor",
+    "invatator",
+    "doctor",
+    "programator",
+    "asistenta",
+    "educator",
+    "hobby",
+    "personalizat",
+  ],
+  martisoare: ["primavara", "1-martie", "personalizat", "handmade"],
+  "semne-de-carte": ["craciun", "primavara", "toamna", "personalizat", "handmade"],
+  tablouri: ["familie", "bebelus", "nastere", "fimo", "personalizat"],
+  "ornamente-craciun": ["craciun", "brad", "personalizat", "handmade"],
+};
+---
+
+<style>
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 1.5rem;
+    row-gap: 1.25rem;
+  }
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    min-width: 0;
+  }
+  .form-group.full {
+    grid-column: 1 / -1;
+  }
+  label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #374151;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  input[type="text"],
+  input[type="number"],
+  select,
+  textarea {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    color: #111;
+    background: #fff;
+    transition: border-color 0.15s;
+  }
+  input:focus,
+  select:focus,
+  textarea:focus {
+    outline: none;
+    border-color: #8b5cf6;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.12);
+  }
+  textarea {
+    min-height: 80px;
+    resize: vertical;
+  }
+  .checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+  }
+  .checkbox-row input {
+    width: auto;
+  }
+  .tag-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    background: #ede9fe;
+    color: #6d28d9;
+    border: 1px solid #ddd6fe;
+    cursor: pointer;
+    transition: background 0.15s;
+    user-select: none;
+  }
+  .tag-chip:hover {
+    background: #ddd6fe;
+  }
+  .tag-chip.active {
+    background: #8b5cf6;
+    color: #fff;
+    border-color: #8b5cf6;
+  }
+  .form-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid #e5e7eb;
+  }
+  .btn {
+    padding: 0.625rem 1.25rem;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: opacity 0.15s;
+  }
+  .btn:hover {
+    opacity: 0.85;
+  }
+  .btn-primary {
+    background: #8b5cf6;
+    color: #fff;
+  }
+  .btn-secondary {
+    background: #f3f4f6;
+    color: #374151;
+    border: 1px solid #d1d5db;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+  }
+</style>
+
+<form method="post" id="product-form">
+  <div
+    class="form-grid"
+    style="display:grid;grid-template-columns:1fr 1fr;column-gap:1.5rem;row-gap:1.25rem;"
+  >
+    <div class="form-group">
+      <label for="slug">Slug (URL key)</label>
+      <input
+        type="text"
+        id="slug"
+        name="slug"
+        value={product?.slug ?? ""}
+        required
+        placeholder="cana-florala-lut"
+        pattern="[a-z0-9\-]+"
+        title="Lowercase letters, numbers and hyphens only"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="category">Categorie</label>
+      <select id="category" name="category">
+        <option value="">— fără categorie —</option>
+        {
+          categories.map((cat) => (
+            <option value={cat} selected={product?.category === cat}>
+              {categoryLabels[cat]}
+            </option>
+          ))
+        }
+        {
+          product?.category && !categories.includes(product.category) && (
+            <option value={product.category} selected>
+              {product.category}
+            </option>
+          )
+        }
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="name">Name (RO)</label>
+      <input type="text" id="name" name="name" value={product?.name ?? ""} required />
+    </div>
+
+    <div class="form-group">
+      <label for="name_en">Name (EN)</label>
+      <input type="text" id="name_en" name="name_en" value={product?.name_en ?? ""} />
+    </div>
+
+    <div class="form-group full">
+      <label for="description">Description (RO)</label>
+      <textarea id="description" name="description">{product?.description ?? ""}</textarea>
+    </div>
+
+    <div class="form-group full">
+      <label for="description_en">Description (EN)</label>
+      <textarea id="description_en" name="description_en">{product?.description_en ?? ""}</textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="price">Price</label>
+      <input
+        type="number"
+        id="price"
+        name="price"
+        value={product?.price ?? ""}
+        required
+        min="0"
+        step="0.01"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="currency">Currency</label>
+      <select id="currency" name="currency">
+        <option value="RON" selected={!product || product.currency === "RON"}>RON</option>
+        <option value="EUR" selected={product?.currency === "EUR"}>EUR</option>
+      </select>
+    </div>
+
+    <div class="form-group full">
+      <label>Product Image</label>
+      <!-- Hidden input receives the URL after upload via custom event -->
+      <input type="hidden" id="image_url" name="image_url" value={product?.image_url ?? ""} />
+      <ImageUpload
+        client:load
+        accessToken={accessToken}
+        supabaseUrl={supabaseUrl}
+        currentUrl={product?.image_url ?? ""}
+      />
+    </div>
+
+    <div class="form-group full">
+      <label for="image_alt">Image Alt Text</label>
+      <input type="text" id="image_alt" name="image_alt" value={product?.image_alt ?? ""} />
+    </div>
+
+    <div class="form-group full">
+      <label for="tags"
+        >Tags <span style="font-weight:400;text-transform:none;letter-spacing:0"
+          >(separate prin virgulă)</span
+        ></label
+      >
+      <input
+        type="text"
+        id="tags"
+        name="tags"
+        value={(product?.tags ?? []).join(", ")}
+        placeholder="profesor, personalizat, handmade"
+      />
+      <div
+        id="tag-suggestions"
+        style="display:flex;flex-wrap:wrap;gap:0.375rem;margin-top:0.375rem;min-height:1.5rem;"
+      >
+      </div>
+      <p style="font-size:0.75rem;color:#9ca3af;margin-top:0.25rem;">
+        Click pe un tag ca să îl adaugi
+      </p>
+    </div>
+
+    <div class="form-group">
+      <label>&nbsp;</label>
+      <label class="checkbox-row">
+        <input type="checkbox" name="featured" value="true" checked={product?.featured ?? false} />
+        Featured product
+      </label>
+    </div>
+
+    <div class="form-group">
+      <label>&nbsp;</label>
+      <label class="checkbox-row">
+        <input type="checkbox" name="in_stock" value="true" checked={product?.in_stock ?? true} />
+        In stock
+      </label>
+    </div>
+  </div>
+
+  <div class="form-actions">
+    <button type="submit" class="btn btn-primary">
+      {isEdit ? "Save Changes" : "Create Product"}
+    </button>
+    <a href="/admin/products" class="btn btn-secondary">Cancel</a>
+    {isEdit && <input type="hidden" name="action" value="update" />}
+  </div>
+</form>
+
+<script>
+  // Wire the ImageUpload custom event to the hidden input
+  document.addEventListener("image-uploaded", (e: Event) => {
+    const detail = (e as CustomEvent<{ url: string }>).detail;
+    const input = document.getElementById("image_url") as HTMLInputElement | null;
+    if (input) input.value = detail.url;
+  });
+
+  // Tag suggestions per category
+  const tagSuggestions: Record<string, string[]> = {
+    "cani-personalizate": [
+      "profesor",
+      "invatator",
+      "doctor",
+      "programator",
+      "asistenta",
+      "educator",
+      "hobby",
+      "personalizat",
+    ],
+    martisoare: ["primavara", "1-martie", "personalizat", "handmade"],
+    "semne-de-carte": ["craciun", "primavara", "toamna", "personalizat", "handmade"],
+    tablouri: ["familie", "bebelus", "nastere", "fimo", "personalizat"],
+    "ornamente-craciun": ["craciun", "brad", "personalizat", "handmade"],
+  };
+
+  const categorySelect = document.getElementById("category") as HTMLSelectElement;
+  const tagsInput = document.getElementById("tags") as HTMLInputElement;
+  const suggestionsContainer = document.getElementById("tag-suggestions") as HTMLDivElement;
+
+  function getTags(): string[] {
+    return tagsInput.value
+      .split(",")
+      .map((t) => t.trim())
+      .filter(Boolean);
+  }
+
+  function renderSuggestions(category: string) {
+    suggestionsContainer.innerHTML = "";
+    const suggestions = tagSuggestions[category] ?? [];
+    if (!suggestions.length) return;
+
+    suggestions.forEach((tag) => {
+      const chip = document.createElement("button");
+      chip.type = "button";
+      chip.textContent = tag;
+      chip.className = "tag-chip";
+      if (getTags().includes(tag)) chip.classList.add("active");
+
+      chip.addEventListener("click", () => {
+        const current = getTags();
+        if (current.includes(tag)) {
+          // Remove tag
+          tagsInput.value = current.filter((t) => t !== tag).join(", ");
+          chip.classList.remove("active");
+        } else {
+          // Add tag
+          tagsInput.value = [...current, tag].join(", ");
+          chip.classList.add("active");
+        }
+      });
+
+      suggestionsContainer.appendChild(chip);
+    });
+  }
+
+  categorySelect.addEventListener("change", () => renderSuggestions(categorySelect.value));
+
+  // Render on load if category already set (edit mode)
+  if (categorySelect.value) renderSuggestions(categorySelect.value);
+</script>

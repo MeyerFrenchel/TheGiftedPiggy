@@ -1,10 +1,10 @@
 ---
 import ProductCard from "./ProductCard.astro";
 import type { Lang } from "@i18n/ui";
-import type { CollectionEntry } from "astro:content";
+import type { Tables } from "@lib/database.types";
 
 interface Props {
-  products: CollectionEntry<"products">[];
+  products: Tables<"products">[];
   lang?: Lang;
 }
 

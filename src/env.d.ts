@@ -10,3 +10,18 @@ interface ImportMetaEnv {
 interface ImportMeta {
   readonly env: ImportMetaEnv;
 }
+
+declare namespace App {
+  interface Locals {
+    user?: import('@supabase/supabase-js').User;
+    profile?: {
+      id: string;
+      email: string | null;
+      full_name: string | null;
+      role: string;
+      avatar_url: string | null;
+      created_at: string;
+      updated_at: string;
+    };
+  }
+}

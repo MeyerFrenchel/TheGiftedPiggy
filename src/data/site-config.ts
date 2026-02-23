@@ -13,7 +13,7 @@ export const siteConfig = {
   locales: ["ro", "en"],
   author: "The Gifted Piggy",
   contact: {
-    email: "hello@thegiftedpiggy.com",
+    email: "thegiftedpiggy@gmail.com",
     instagram: "https://instagram.com/thegiftedpiggy",
     facebook: "https://facebook.com/thegiftedpiggy",
   },

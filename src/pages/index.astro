@@ -9,7 +9,6 @@ import { siteConfig } from "@data/site-config";
 
 const lang = "ro";
 
-const allProducts = await getCollection("products");
 const allPosts = await getCollection("blog", ({ data }) => !data.draft && data.lang === "ro");
 const sortedPosts = allPosts.sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
@@ -24,6 +23,6 @@ const sortedPosts = allPosts.sort(
 >
   <StructuredData type="website" {lang} slot="head" />
   <Hero {lang} />
-  <FeaturedProducts products={allProducts} {lang} />
+  <FeaturedProducts {lang} />
   <LatestPosts posts={sortedPosts} {lang} />
 </PageLayout>

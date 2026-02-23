@@ -3,12 +3,18 @@ import PageLayout from "@layouts/PageLayout.astro";
 import SectionHeading from "@components/ui/SectionHeading.astro";
 import ProductGrid from "@components/products/ProductGrid.astro";
 import ProductCTA from "@components/products/ProductCTA.astro";
-import { getCollection } from "astro:content";
+import { createServiceClient } from "@lib/supabase";
 import { useTranslations } from "@i18n/utils";
 
 const lang = "en";
 const t = useTranslations(lang);
-const products = await getCollection("products", ({ data }) => data.inStock);
+
+const supabase = createServiceClient();
+const { data: products } = await supabase
+  .from("products")
+  .select("*")
+  .eq("in_stock", true)
+  .order("created_at", { ascending: false });
 ---
 
 <PageLayout
@@ -22,7 +28,7 @@ const products = await getCollection("products", ({ data }) => data.inStock);
       subtitle={t("products.subtitle")}
       as="h1"
     />
-    <ProductGrid {products} {lang} />
+    <ProductGrid products={products ?? []} {lang} />
     <ProductCTA {lang} />
   </div>
 </PageLayout>
