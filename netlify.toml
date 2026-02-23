@@ -1,0 +1,9 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+# PUBLIC_SUPABASE_URL and PUBLIC_SUPABASE_ANON_KEY are intentionally
+# embedded in client-side output — that is their purpose (PUBLIC_ prefix).
+# Only SUPABASE_SERVICE_ROLE_KEY is truly secret and must never appear in dist.
+[build.environment]
+  SECRETS_SCAN_OMIT_KEYS = "PUBLIC_SUPABASE_URL,PUBLIC_SUPABASE_ANON_KEY"
