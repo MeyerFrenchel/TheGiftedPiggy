@@ -14,7 +14,7 @@ export default defineConfig({
   server: {
     host: true,
   },
-  output: "hybrid",
+  output: "static",
   adapter: netlify(),
   site: "https://thegiftedpiggy.com",
   integrations: [
