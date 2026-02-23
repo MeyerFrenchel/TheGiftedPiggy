@@ -4,7 +4,7 @@ import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
 import robotsTxt from "astro-robots-txt";
 import tailwindcss from "@tailwindcss/vite";
-import node from "@astrojs/node";
+import netlify from "@astrojs/netlify";
 import { fileURLToPath } from "url";
 import path from "path";
 
@@ -14,8 +14,8 @@ export default defineConfig({
   server: {
     host: true,
   },
-  output: "static",
-  adapter: node({ mode: "standalone" }),
+  output: "hybrid",
+  adapter: netlify(),
   site: "https://thegiftedpiggy.com",
   integrations: [
     react(),

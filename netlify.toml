@@ -1,6 +1,5 @@
 [build]
   command = "npm run build"
-  publish = "dist"
 
 # PUBLIC_SUPABASE_URL and PUBLIC_SUPABASE_ANON_KEY are intentionally
 # embedded in client-side output — that is their purpose (PUBLIC_ prefix).
