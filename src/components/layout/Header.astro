@@ -19,10 +19,12 @@ const currentPath = Astro.url.pathname;
     <!-- Logo -->
     <a
       href={lang === "en" ? "/en/" : "/"}
-      class="flex items-center transition-opacity hover:opacity-80"
+      class="flex items-center gap-2 text-2xl font-bold tracking-wide text-primary transition-opacity hover:opacity-80"
+      style="font-family: var(--font-heading);"
       aria-label={siteConfig.name}
     >
-      <img src="/tgp-logo.png" alt={siteConfig.name} class="w-36" />
+      <span class="text-terracotta">🐷</span>
+      <span>{siteConfig.name}</span>
     </a>
 
     <!-- Desktop Navigation -->
