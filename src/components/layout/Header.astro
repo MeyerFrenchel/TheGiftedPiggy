@@ -36,10 +36,8 @@ const currentPath = Astro.url.pathname;
       </div>
     </div>
 
-    <!-- Mobile: Theme + Language + Hamburger -->
-    <div class="flex items-center gap-2 md:hidden">
-      <ThemeToggle client:load />
-      <LanguageSwitcher lang={lang} currentPath={currentPath} client:load />
+    <!-- Mobile: Hamburger only -->
+    <div class="md:hidden">
       <MobileMenu lang={lang} currentPath={currentPath} client:load />
     </div>
   </div>

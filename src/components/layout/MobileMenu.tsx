@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import type { Lang } from "../../i18n/ui";
 import { ui } from "../../i18n/ui";
+import ThemeToggle from "../ui/ThemeToggle";
+import LanguageSwitcher from "../ui/LanguageSwitcher";
 
 interface NavItem {
   label: string;
@@ -155,6 +157,25 @@ export default function MobileMenu({ lang, currentPath }: Props) {
                 })}
               </ul>
             </nav>
+
+            {/* Divider */}
+            <div className="border-t border-[var(--border-color)]" />
+
+            {/* Theme & Language Controls */}
+            <div className="flex flex-col gap-3 p-4">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-semibold text-[var(--text-secondary)]">
+                  {t("ui.theme")}
+                </span>
+                <ThemeToggle client:load />
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-semibold text-[var(--text-secondary)]">
+                  {t("ui.language")}
+                </span>
+                <LanguageSwitcher lang={lang} currentPath={currentPath} client:load />
+              </div>
+            </div>
           </div>
         </>,
         document.body
