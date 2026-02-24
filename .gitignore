@@ -9,3 +9,6 @@ dist/
 Thumbs.db
 .claude/
 .mcp.json
+
+# Local Netlify folder
+.netlify
