@@ -21,13 +21,23 @@ const formattedPrice = new Intl.NumberFormat("ro-RO", {
   currency: currency,
   minimumFractionDigits: 0,
 }).format(price);
+
+// Serialize product data for the modal (use translated name/description)
+const modalProduct = JSON.stringify({
+  ...product,
+  name,
+  description,
+});
 ---
 
-<article
-  class="group bg-card rounded-[var(--radius-lg)] border border-theme overflow-hidden card-hover flex flex-col"
+<button
+  type="button"
+  class="product-card-trigger group bg-card rounded-[var(--radius-lg)] border border-theme overflow-hidden card-hover flex flex-col w-full text-left cursor-pointer"
+  data-product={modalProduct}
+  aria-label={`Ver detalii: ${name}`}
 >
   <!-- Product Image -->
-  <div class="relative overflow-hidden aspect-square">
+  <div class="relative overflow-hidden aspect-square w-full">
     {
       image_url ? (
         <img
@@ -54,6 +64,11 @@ const formattedPrice = new Intl.NumberFormat("ro-RO", {
         <Badge variant="default" class="text-sm">{t("products.outOfStock")}</Badge>
       </div>
     )}
+
+    <!-- Hover overlay hint -->
+    <div class="card-view-hint">
+      <span class="view-hint-text">Vezi detalii</span>
+    </div>
   </div>
 
   <!-- Product Info -->
@@ -79,4 +94,65 @@ const formattedPrice = new Intl.NumberFormat("ro-RO", {
       </span>
     </div>
   </div>
-</article>
+</button>
+
+<style>
+  .product-card-trigger {
+    border: none;
+    padding: 0;
+    background: none;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  /* Hover overlay */
+  .card-view-hint {
+    position: absolute;
+    inset: 0;
+    background: rgba(30, 18, 10, 0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.25s ease;
+    pointer-events: none;
+  }
+
+  .view-hint-text {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #fff;
+    padding: 0.45rem 1rem;
+    border-radius: 99px;
+    border: 1.5px solid rgba(255, 255, 255, 0.6);
+    background: rgba(188, 108, 74, 0.75);
+    opacity: 0;
+    transform: scale(0.88);
+    transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .product-card-trigger:hover .card-view-hint {
+    background: rgba(30, 18, 10, 0.12);
+  }
+
+  .product-card-trigger:hover .view-hint-text {
+    opacity: 1;
+    transform: scale(1);
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('.product-card-trigger').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      try {
+        const raw = btn.dataset.product;
+        if (!raw) return;
+        const product = JSON.parse(raw);
+        document.dispatchEvent(new CustomEvent('open-product-modal', { detail: product }));
+      } catch {
+        // silently ignore parse errors
+      }
+    });
+  });
+</script>

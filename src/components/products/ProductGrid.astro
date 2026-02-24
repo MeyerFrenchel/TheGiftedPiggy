@@ -1,5 +1,6 @@
 ---
 import ProductCard from "./ProductCard.astro";
+import ProductModal from "./ProductModal.astro";
 import type { Lang } from "@i18n/ui";
 import type { Tables } from "@lib/database.types";
 
@@ -14,3 +15,5 @@ const { products, lang = "ro" } = Astro.props;
 <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
   {products.map((product) => <ProductCard {product} {lang} />)}
 </div>
+
+<ProductModal />

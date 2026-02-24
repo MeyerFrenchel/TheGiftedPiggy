@@ -1,0 +1,631 @@
+---
+// ProductModal.astro
+// Rendered once in ProductGrid; populated via JS from card click
+---
+
+<div
+  id="product-modal-backdrop"
+  aria-modal="true"
+  role="dialog"
+  aria-labelledby="modal-product-name"
+  class="modal-backdrop"
+  tabindex="-1"
+>
+  <div class="modal-shell" id="product-modal-shell">
+
+    <!-- Close button -->
+    <button
+      id="modal-close-btn"
+      aria-label="Închide"
+      class="modal-close-btn"
+    >
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <line x1="1" y1="1" x2="17" y2="17"/>
+        <line x1="17" y1="1" x2="1" y2="17"/>
+      </svg>
+    </button>
+
+    <!-- Image pane -->
+    <div class="modal-image-pane">
+      <div id="modal-image-wrap" class="modal-image-wrap">
+        <img
+          id="modal-img"
+          src=""
+          alt=""
+          class="modal-img hidden"
+        />
+        <div id="modal-img-placeholder" class="modal-img-placeholder hidden">
+          <span class="placeholder-emoji" aria-hidden="true">🎁</span>
+        </div>
+      </div>
+      <!-- Decorative corner accent -->
+      <div class="image-corner-accent" aria-hidden="true"></div>
+    </div>
+
+    <!-- Info pane -->
+    <div class="modal-info-pane" id="modal-info-pane">
+
+      <!-- Top meta row -->
+      <div class="modal-meta-row">
+        <span id="modal-category" class="modal-category-badge hidden"></span>
+        <span id="modal-stock-badge" class="modal-stock-badge"></span>
+      </div>
+
+      <!-- Product name -->
+      <h2 id="modal-product-name" class="modal-product-name"></h2>
+
+      <!-- Decorative divider -->
+      <div class="modal-divider" aria-hidden="true">
+        <span class="divider-leaf">❧</span>
+      </div>
+
+      <!-- Description -->
+      <div id="modal-description" class="modal-description"></div>
+
+      <!-- Tags -->
+      <div id="modal-tags-wrap" class="modal-tags-wrap hidden">
+        <div id="modal-tags" class="modal-tags"></div>
+      </div>
+
+      <!-- Price row -->
+      <div class="modal-price-row">
+        <div class="price-block">
+          <span class="price-label">Preț</span>
+          <span id="modal-price" class="modal-price"></span>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <a
+        id="modal-cta"
+        href="mailto:contact@thegiftedpiggy.ro"
+        class="modal-cta-btn"
+      >
+        <span class="cta-icon" aria-hidden="true">✉</span>
+        Contactează-mă
+      </a>
+
+      <p class="modal-cta-hint">Scrie-mi pentru disponibilitate și livrare</p>
+    </div>
+
+  </div>
+</div>
+
+<style>
+  /* ── Backdrop ── */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background: rgba(30, 18, 10, 0.55);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .modal-backdrop.is-open {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  /* ── Shell ── */
+  .modal-shell {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+    max-width: 880px;
+    max-height: 90vh;
+    background: var(--bg-card, #fff9f5);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow:
+      0 32px 80px rgba(30, 18, 10, 0.22),
+      0 0 0 1px rgba(188, 108, 74, 0.12);
+    transform: translateY(28px) scale(0.97);
+    transition: transform 0.38s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease;
+    opacity: 0;
+  }
+
+  .modal-backdrop.is-open .modal-shell {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+
+  /* ── Close button ── */
+  .modal-close-btn {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    z-index: 10;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(188, 108, 74, 0.25);
+    background: var(--bg-card, #fff9f5);
+    color: var(--text-muted, #888);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.18s, color 0.18s, border-color 0.18s, transform 0.18s;
+  }
+
+  .modal-close-btn:hover {
+    background: var(--color-terracotta, #bc6c4a);
+    border-color: var(--color-terracotta, #bc6c4a);
+    color: #fff;
+    transform: rotate(90deg);
+  }
+
+  /* ── Image pane ── */
+  .modal-image-pane {
+    position: relative;
+    overflow: hidden;
+    background: var(--color-cream-dark, #f0e6d9);
+    min-height: 340px;
+  }
+
+  .modal-image-wrap {
+    width: 100%;
+    height: 100%;
+    min-height: 340px;
+  }
+
+  .modal-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transform: scale(1.04);
+    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .modal-backdrop.is-open .modal-img {
+    transform: scale(1);
+  }
+
+  .modal-img-placeholder {
+    width: 100%;
+    height: 100%;
+    min-height: 340px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--color-blush, #f5ddd3) 0%, var(--color-cream-dark, #f0e6d9) 100%);
+  }
+
+  .placeholder-emoji {
+    font-size: 5rem;
+    filter: drop-shadow(0 4px 12px rgba(188, 108, 74, 0.25));
+    animation: float 3s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  .image-corner-accent {
+    position: absolute;
+    bottom: -24px;
+    left: -24px;
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    border: 2px solid rgba(188, 108, 74, 0.2);
+    pointer-events: none;
+  }
+
+  .image-corner-accent::after {
+    content: '';
+    position: absolute;
+    inset: 14px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(188, 108, 74, 0.15);
+  }
+
+  /* ── Info pane ── */
+  .modal-info-pane {
+    padding: 2.5rem 2rem 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    overflow-y: auto;
+    max-height: 90vh;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-blush, #f5ddd3) transparent;
+  }
+
+  .modal-info-pane::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .modal-info-pane::-webkit-scrollbar-thumb {
+    background: var(--color-blush, #f5ddd3);
+    border-radius: 4px;
+  }
+
+  /* ── Meta row ── */
+  .modal-meta-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.75rem;
+  }
+
+  .modal-category-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.2rem 0.65rem;
+    border-radius: var(--radius-full, 9999px);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    background: var(--color-blush, #f5ddd3);
+    color: var(--color-terracotta-dark, #8b3a1c);
+  }
+
+  .modal-stock-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.2rem 0.65rem;
+    border-radius: var(--radius-full, 9999px);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .modal-stock-badge.in-stock {
+    background: rgba(143, 174, 139, 0.2);
+    color: #4a7a45;
+  }
+
+  .modal-stock-badge.out-of-stock {
+    background: rgba(188, 108, 74, 0.1);
+    color: var(--color-terracotta, #bc6c4a);
+  }
+
+  .modal-stock-badge::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  /* ── Name ── */
+  .modal-product-name {
+    font-family: var(--font-heading, serif);
+    font-size: clamp(1.35rem, 3vw, 1.75rem);
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--text-primary, #1e120a);
+    margin: 0 0 0.6rem;
+  }
+
+  /* ── Divider ── */
+  .modal-divider {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0.35rem 0 1rem;
+    color: var(--color-terracotta, #bc6c4a);
+    opacity: 0.5;
+    font-size: 1.1rem;
+  }
+
+  .modal-divider::before,
+  .modal-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: currentColor;
+  }
+
+  /* ── Description ── */
+  .modal-description {
+    font-size: 0.92rem;
+    line-height: 1.75;
+    color: var(--text-secondary, #4a3728);
+    margin-bottom: 1rem;
+    white-space: pre-line;
+  }
+
+  /* ── Tags ── */
+  .modal-tags-wrap {
+    margin-bottom: 1.25rem;
+  }
+
+  .modal-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .tag-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.2rem 0.6rem;
+    border-radius: var(--radius-full, 9999px);
+    font-size: 0.7rem;
+    font-weight: 500;
+    background: rgba(143, 174, 139, 0.18);
+    color: #3d6640;
+    border: 1px solid rgba(143, 174, 139, 0.3);
+    letter-spacing: 0.03em;
+  }
+
+  /* ── Price ── */
+  .modal-price-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.85rem 1.1rem;
+    background: linear-gradient(135deg, var(--color-blush, #f5ddd3) 0%, rgba(245, 221, 211, 0.4) 100%);
+    border-radius: 12px;
+    border: 1px solid rgba(188, 108, 74, 0.15);
+    margin-bottom: 1.25rem;
+  }
+
+  .price-block {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+  }
+
+  .price-label {
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted, #888);
+  }
+
+  .modal-price {
+    font-family: var(--font-heading, serif);
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--color-terracotta, #bc6c4a);
+    line-height: 1;
+  }
+
+  /* ── CTA button ── */
+  .modal-cta-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.85rem 1.5rem;
+    border-radius: 10px;
+    background: var(--color-terracotta, #bc6c4a);
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.18s, box-shadow 0.2s;
+    box-shadow: 0 4px 16px rgba(188, 108, 74, 0.3);
+    margin-bottom: 0.6rem;
+  }
+
+  .modal-cta-btn:hover {
+    background: var(--color-terracotta-dark, #8b3a1c);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(188, 108, 74, 0.4);
+  }
+
+  .modal-cta-btn:active {
+    transform: translateY(0);
+  }
+
+  .cta-icon {
+    font-size: 1rem;
+  }
+
+  .modal-cta-hint {
+    font-size: 0.72rem;
+    color: var(--text-muted, #888);
+    text-align: center;
+    margin: 0;
+  }
+
+  /* ── Hidden utility ── */
+  .hidden { display: none !important; }
+
+  /* ── Mobile ── */
+  @media (max-width: 640px) {
+    .modal-backdrop {
+      padding: 0;
+      align-items: flex-end;
+    }
+
+    .modal-shell {
+      grid-template-columns: 1fr;
+      grid-template-rows: 260px 1fr;
+      max-height: 92vh;
+      width: 100%;
+      border-radius: 20px 20px 0 0;
+      transform: translateY(100%);
+    }
+
+    .modal-backdrop.is-open .modal-shell {
+      transform: translateY(0);
+    }
+
+    .modal-image-pane {
+      min-height: 260px;
+    }
+
+    .modal-image-wrap {
+      min-height: 260px;
+    }
+
+    .modal-img-placeholder {
+      min-height: 260px;
+    }
+
+    .modal-info-pane {
+      padding: 1.5rem 1.25rem 2rem;
+      max-height: calc(92vh - 260px);
+    }
+
+    .modal-close-btn {
+      top: 10px;
+      right: 10px;
+    }
+  }
+</style>
+
+<script>
+  const backdrop = document.getElementById('product-modal-backdrop')!;
+  const shell = document.getElementById('product-modal-shell')!;
+  const closeBtn = document.getElementById('modal-close-btn')!;
+
+  const elImg = document.getElementById('modal-img') as HTMLImageElement;
+  const elPlaceholder = document.getElementById('modal-img-placeholder')!;
+  const elName = document.getElementById('modal-product-name')!;
+  const elCategory = document.getElementById('modal-category')!;
+  const elStockBadge = document.getElementById('modal-stock-badge')!;
+  const elDescription = document.getElementById('modal-description')!;
+  const elTagsWrap = document.getElementById('modal-tags-wrap')!;
+  const elTags = document.getElementById('modal-tags')!;
+  const elPrice = document.getElementById('modal-price')!;
+  const elCta = document.getElementById('modal-cta') as HTMLAnchorElement;
+
+  let previousFocus: HTMLElement | null = null;
+
+  function openModal(product: Record<string, any>) {
+    // Image
+    if (product.image_url) {
+      elImg.src = product.image_url;
+      elImg.alt = product.image_alt ?? product.name ?? '';
+      elImg.classList.remove('hidden');
+      elPlaceholder.classList.add('hidden');
+    } else {
+      elImg.classList.add('hidden');
+      elPlaceholder.classList.remove('hidden');
+    }
+
+    // Name
+    elName.textContent = product.name ?? '';
+
+    // Category
+    if (product.category) {
+      elCategory.textContent = product.category;
+      elCategory.classList.remove('hidden');
+    } else {
+      elCategory.classList.add('hidden');
+    }
+
+    // Stock
+    if (product.in_stock) {
+      elStockBadge.textContent = '';
+      elStockBadge.className = 'modal-stock-badge in-stock';
+      elStockBadge.appendChild(document.createTextNode('Disponibil'));
+    } else {
+      elStockBadge.textContent = '';
+      elStockBadge.className = 'modal-stock-badge out-of-stock';
+      elStockBadge.appendChild(document.createTextNode('Indisponibil'));
+    }
+
+    // Description
+    elDescription.textContent = product.description ?? '';
+
+    // Tags
+    const tags: string[] = Array.isArray(product.tags) ? product.tags : [];
+    if (tags.length > 0) {
+      elTags.innerHTML = tags
+        .map((t: string) => `<span class="tag-pill">${t}</span>`)
+        .join('');
+      elTagsWrap.classList.remove('hidden');
+    } else {
+      elTagsWrap.classList.add('hidden');
+    }
+
+    // Price
+    const price = typeof product.price === 'number' ? product.price : parseFloat(product.price ?? '0');
+    const currency = product.currency ?? 'RON';
+    elPrice.textContent = new Intl.NumberFormat('ro-RO', {
+      style: 'currency',
+      currency,
+      minimumFractionDigits: 0,
+    }).format(price);
+
+    // CTA mailto with product name
+    const subject = encodeURIComponent(`Comandă: ${product.name ?? 'Produs'}`);
+    elCta.href = `mailto:contact@thegiftedpiggy.ro?subject=${subject}`;
+
+    // Show
+    previousFocus = document.activeElement as HTMLElement;
+    backdrop.classList.add('is-open');
+    backdrop.removeAttribute('tabindex');
+    closeBtn.focus();
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    backdrop.classList.remove('is-open');
+    backdrop.setAttribute('tabindex', '-1');
+    document.body.style.overflow = '';
+    previousFocus?.focus();
+  }
+
+  // Close on backdrop click (not shell)
+  backdrop.addEventListener('click', (e) => {
+    if (e.target === backdrop) closeModal();
+  });
+
+  closeBtn.addEventListener('click', closeModal);
+
+  // ESC key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && backdrop.classList.contains('is-open')) {
+      closeModal();
+    }
+  });
+
+  // Listen for card clicks
+  document.addEventListener('open-product-modal', (e: Event) => {
+    const detail = (e as CustomEvent).detail;
+    if (detail) openModal(detail);
+  });
+
+  // Focus trap inside modal
+  backdrop.addEventListener('keydown', (e) => {
+    if (e.key !== 'Tab') return;
+    const focusable = Array.from(
+      shell.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      )
+    ).filter((el) => !el.closest('.hidden'));
+
+    if (focusable.length === 0) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+
+    if (e.shiftKey) {
+      if (document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      }
+    } else {
+      if (document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
+  });
+</script>
