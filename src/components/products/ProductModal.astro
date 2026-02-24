@@ -547,9 +547,13 @@
     // Tags
     const tags: string[] = Array.isArray(product.tags) ? product.tags : [];
     if (tags.length > 0) {
-      elTags.innerHTML = tags
-        .map((t: string) => `<span class="tag-pill">${t}</span>`)
-        .join('');
+      elTags.innerHTML = '';
+      tags.forEach((t: string) => {
+        const pill = document.createElement('span');
+        pill.className = 'tag-pill';
+        pill.textContent = t;
+        elTags.appendChild(pill);
+      });
       elTagsWrap.classList.remove('hidden');
     } else {
       elTagsWrap.classList.add('hidden');
