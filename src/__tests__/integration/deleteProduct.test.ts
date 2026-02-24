@@ -106,6 +106,6 @@ describe('deleteProduct', () => {
 
     const result = await deleteProduct(client, 'product-123');
 
-    expect(result).toEqual({ success: false, error: 'delete failed' });
+    expect(result).toEqual({ success: false, error: 'Could not delete product. Please try again.' });
   });
 });

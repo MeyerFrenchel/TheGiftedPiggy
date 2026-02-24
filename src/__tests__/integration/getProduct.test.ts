@@ -31,7 +31,7 @@ describe('getProduct', () => {
 
     const result = await getProduct(client, 'nonexistent-id');
 
-    expect(result).toEqual({ success: false, error: 'row not found' });
+    expect(result).toEqual({ success: false, error: 'Could not load product.' });
   });
 
   it('returns { success: false } when data is null with no error', async () => {

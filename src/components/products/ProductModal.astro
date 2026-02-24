@@ -509,7 +509,7 @@
 
   function openModal(product: Record<string, any>) {
     // Image
-    if (product.image_url) {
+    if (product.image_url && product.image_url.startsWith('https://')) {
       elImg.src = product.image_url;
       elImg.alt = product.image_alt ?? product.name ?? '';
       elImg.classList.remove('hidden');

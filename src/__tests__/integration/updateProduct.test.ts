@@ -40,6 +40,6 @@ describe('updateProduct', () => {
       error: { message: 'row not found' },
     });
     const result = await updateProduct(client, 'product-123', parseProductFormData(makeFormData()));
-    expect(result).toEqual({ success: false, error: 'row not found' });
+    expect(result).toEqual({ success: false, error: 'Could not update product. Please try again.' });
   });
 });

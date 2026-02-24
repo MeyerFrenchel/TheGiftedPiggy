@@ -6,6 +6,12 @@ import type { AstroCookies } from 'astro';
 const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
 
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error(
+    'Missing required environment variables: PUBLIC_SUPABASE_URL and PUBLIC_SUPABASE_ANON_KEY must be set.'
+  );
+}
+
 // Browser-safe client (uses anon key — respects Row Level Security)
 export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey);
 

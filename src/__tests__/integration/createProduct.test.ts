@@ -61,6 +61,6 @@ describe('createProduct', () => {
       error: { message: 'duplicate key value' },
     });
     const result = await createProduct(client, parseProductFormData(makeFormData()));
-    expect(result).toEqual({ success: false, error: 'duplicate key value' });
+    expect(result).toEqual({ success: false, error: 'Could not save product. Please try again.' });
   });
 });
