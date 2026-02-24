@@ -5,9 +5,14 @@ import AdminLayout from '@layouts/AdminLayout.astro';
 import DeleteProductButton from '@components/admin/DeleteProductButton';
 import { createSSRClient } from '@lib/supabase';
 import { deleteProduct, getProduct } from '@lib/products';
+import { generateCsrfToken, setCsrfCookie, readCsrfCookie, validateCsrfTokens } from '@lib/csrf';
 
 const { id } = Astro.params;
 if (!id) return Astro.redirect('/admin/products');
+
+const existingCsrfToken = readCsrfCookie(Astro.cookies);
+const csrfToken = generateCsrfToken();
+setCsrfCookie(Astro.cookies, csrfToken);
 
 const supabase = createSSRClient({ request: Astro.request, cookies: Astro.cookies });
 
@@ -15,7 +20,11 @@ const supabase = createSSRClient({ request: Astro.request, cookies: Astro.cookie
 if (Astro.request.method === 'POST') {
   const form = await Astro.request.formData();
   if (form.get('action') === 'delete') {
-    await deleteProduct(supabase, id);
+    const formCsrfToken = form.get('csrf_token')?.toString() ?? '';
+    if (validateCsrfTokens(existingCsrfToken, formCsrfToken)) {
+      await deleteProduct(supabase, id);
+    }
+    // Redirect regardless — don't leak whether CSRF failed or product was deleted
     return Astro.redirect('/admin/products');
   }
 }
@@ -137,6 +146,7 @@ const formattedPrice = new Intl.NumberFormat('ro-RO', {
         client:load
         productId={id}
         productName={product.name}
+        csrfToken={csrfToken}
       />
     </div>
   </div>

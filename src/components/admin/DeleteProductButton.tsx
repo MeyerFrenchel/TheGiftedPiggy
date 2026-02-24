@@ -3,9 +3,10 @@ import { useState } from 'react';
 interface Props {
   productId: string;
   productName: string;
+  csrfToken: string;
 }
 
-export default function DeleteProductButton({ productId, productName }: Props) {
+export default function DeleteProductButton({ productId, productName, csrfToken }: Props) {
   const [confirming, setConfirming] = useState(false);
 
   if (confirming) {
@@ -13,6 +14,7 @@ export default function DeleteProductButton({ productId, productName }: Props) {
       <form method="post" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
         <input type="hidden" name="action" value="delete" />
         <input type="hidden" name="id" value={productId} />
+        <input type="hidden" name="csrf_token" value={csrfToken} />
         <span style={{ fontSize: '0.8rem', color: '#6b7280' }}>Delete "{productName}"?</span>
         <button
           type="submit"

@@ -6,9 +6,10 @@ interface Props {
   product?: Tables<"products">;
   accessToken?: string;
   supabaseUrl?: string;
+  csrfToken?: string;
 }
 
-const { product, accessToken = "", supabaseUrl = "" } = Astro.props;
+const { product, accessToken = "", supabaseUrl = "", csrfToken = "" } = Astro.props;
 const isEdit = !!product;
 
 const categories = [
@@ -156,6 +157,7 @@ const tagSuggestions: Record<string, string[]> = {
 </style>
 
 <form method="post" id="product-form">
+  <input type="hidden" name="csrf_token" value={csrfToken} />
   <div
     class="form-grid"
     style="display:grid;grid-template-columns:1fr 1fr;column-gap:1.5rem;row-gap:1.25rem;"

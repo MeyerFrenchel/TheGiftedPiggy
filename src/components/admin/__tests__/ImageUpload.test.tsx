@@ -239,4 +239,161 @@ describe('ImageUpload', () => {
       });
     });
   });
+
+  describe('file validation', () => {
+    describe('MIME type', () => {
+      it('rejects files with a disallowed MIME type and shows an error', async () => {
+        render(<ImageUpload {...defaultProps} />);
+        const input = document.querySelector('input[type="file"]') as HTMLInputElement;
+
+        // Use fireEvent so the change event fires regardless of the accept attribute
+        fireEvent.change(input, { target: { files: [makeFile('malicious.svg', 'image/svg+xml')] } });
+
+        await waitFor(() => {
+          expect(screen.getByText(/only jpeg, png, webp, and gif/i)).toBeInTheDocument();
+        });
+      });
+
+      it('does NOT call Supabase upload for disallowed MIME types', async () => {
+        render(<ImageUpload {...defaultProps} />);
+        const input = document.querySelector('input[type="file"]') as HTMLInputElement;
+
+        fireEvent.change(input, { target: { files: [makeFile('script.html', 'text/html')] } });
+
+        await waitFor(() => {
+          expect(screen.getByText(/only jpeg, png, webp, and gif/i)).toBeInTheDocument();
+        });
+        expect(mockUpload).not.toHaveBeenCalled();
+      });
+
+      it('rejects application/pdf files', async () => {
+        render(<ImageUpload {...defaultProps} />);
+        const input = document.querySelector('input[type="file"]') as HTMLInputElement;
+
+        fireEvent.change(input, { target: { files: [makeFile('doc.pdf', 'application/pdf')] } });
+
+        await waitFor(() => {
+          expect(screen.getByText(/only jpeg, png, webp, and gif/i)).toBeInTheDocument();
+        });
+        expect(mockUpload).not.toHaveBeenCalled();
+      });
+
+      it('accepts image/jpeg', async () => {
+        const user = userEvent.setup();
+        render(<ImageUpload {...defaultProps} />);
+        const input = document.querySelector('input[type="file"]') as HTMLInputElement;
+
+        await user.upload(input, makeFile('photo.jpg', 'image/jpeg'));
+
+        await waitFor(() => expect(mockUpload).toHaveBeenCalledOnce());
+        expect(screen.queryByText(/only jpeg, png, webp, and gif/i)).not.toBeInTheDocument();
+      });
+
+      it('accepts image/png', async () => {
+        const user = userEvent.setup();
+        render(<ImageUpload {...defaultProps} />);
+        const input = document.querySelector('input[type="file"]') as HTMLInputElement;
+
+        await user.upload(input, makeFile('photo.png', 'image/png'));
+
+        await waitFor(() => expect(mockUpload).toHaveBeenCalledOnce());
+      });
+
+      it('accepts image/webp', async () => {
+        const user = userEvent.setup();
+        render(<ImageUpload {...defaultProps} />);
+        const input = document.querySelector('input[type="file"]') as HTMLInputElement;
+
+        await user.upload(input, makeFile('photo.webp', 'image/webp'));
+
+        await waitFor(() => expect(mockUpload).toHaveBeenCalledOnce());
+      });
+
+      it('accepts image/gif', async () => {
+        const user = userEvent.setup();
+        render(<ImageUpload {...defaultProps} />);
+        const input = document.querySelector('input[type="file"]') as HTMLInputElement;
+
+        await user.upload(input, makeFile('anim.gif', 'image/gif'));
+
+        await waitFor(() => expect(mockUpload).toHaveBeenCalledOnce());
+      });
+    });
+
+    describe('file size', () => {
+      function makeLargeFile(sizeBytes: number, name = 'large.jpg', type = 'image/jpeg') {
+        return new File([new Uint8Array(sizeBytes)], name, { type });
+      }
+
+      const LIMIT = 5 * 1024 * 1024; // 5 MB
+
+      it('rejects files larger than 5 MB and shows an error', async () => {
+        const user = userEvent.setup();
+        render(<ImageUpload {...defaultProps} />);
+        const input = document.querySelector('input[type="file"]') as HTMLInputElement;
+
+        await user.upload(input, makeLargeFile(LIMIT + 1));
+
+        await waitFor(() => {
+          expect(screen.getByText(/under 5 mb/i)).toBeInTheDocument();
+        });
+      });
+
+      it('does NOT call Supabase upload when file exceeds 5 MB', async () => {
+        const user = userEvent.setup();
+        render(<ImageUpload {...defaultProps} />);
+        const input = document.querySelector('input[type="file"]') as HTMLInputElement;
+
+        await user.upload(input, makeLargeFile(LIMIT + 1));
+
+        await waitFor(() => {
+          expect(screen.getByText(/under 5 mb/i)).toBeInTheDocument();
+        });
+        expect(mockUpload).not.toHaveBeenCalled();
+      });
+
+      it('accepts files exactly at the 5 MB limit', async () => {
+        const user = userEvent.setup();
+        render(<ImageUpload {...defaultProps} />);
+        const input = document.querySelector('input[type="file"]') as HTMLInputElement;
+
+        await user.upload(input, makeLargeFile(LIMIT));
+
+        await waitFor(() => expect(mockUpload).toHaveBeenCalledOnce());
+        expect(screen.queryByText(/under 5 mb/i)).not.toBeInTheDocument();
+      });
+
+      it('accepts files well under 5 MB', async () => {
+        const user = userEvent.setup();
+        render(<ImageUpload {...defaultProps} />);
+        const input = document.querySelector('input[type="file"]') as HTMLInputElement;
+
+        await user.upload(input, makeLargeFile(1024)); // 1 KB
+
+        await waitFor(() => expect(mockUpload).toHaveBeenCalledOnce());
+      });
+    });
+
+    describe('combined validation', () => {
+      it('shows MIME error (not size error) when both are invalid — MIME check runs first', async () => {
+        render(<ImageUpload {...defaultProps} />);
+        const input = document.querySelector('input[type="file"]') as HTMLInputElement;
+
+        // PDF that is also over 5 MB — use fireEvent to bypass userEvent's accept filtering
+        const badFile = new File(
+          [new Uint8Array(6 * 1024 * 1024)],
+          'huge.pdf',
+          { type: 'application/pdf' }
+        );
+
+        fireEvent.change(input, { target: { files: [badFile] } });
+
+        await waitFor(() => {
+          expect(screen.getByText(/only jpeg, png, webp, and gif/i)).toBeInTheDocument();
+        });
+        expect(screen.queryByText(/under 5 mb/i)).not.toBeInTheDocument();
+        expect(mockUpload).not.toHaveBeenCalled();
+      });
+    });
+  });
 });

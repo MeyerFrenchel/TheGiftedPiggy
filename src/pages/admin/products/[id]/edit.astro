@@ -5,9 +5,14 @@ import AdminLayout from '@layouts/AdminLayout.astro';
 import AdminProductForm from '@components/admin/AdminProductForm.astro';
 import { createSSRClient } from '@lib/supabase';
 import { parseProductFormData, updateProduct, getProduct } from '@lib/products';
+import { generateCsrfToken, setCsrfCookie, readCsrfCookie, validateCsrfTokens } from '@lib/csrf';
 
 const { id } = Astro.params;
 if (!id) return Astro.redirect('/admin/products');
+
+const existingCsrfToken = readCsrfCookie(Astro.cookies);
+const csrfToken = generateCsrfToken();
+setCsrfCookie(Astro.cookies, csrfToken);
 
 const supabase = createSSRClient({ request: Astro.request, cookies: Astro.cookies });
 
@@ -19,11 +24,17 @@ let errorMsg = '';
 
 if (Astro.request.method === 'POST') {
   const form = await Astro.request.formData();
-  const result = await updateProduct(supabase, id, parseProductFormData(form));
-  if (!result.success) {
-    errorMsg = result.error;
+
+  const formCsrfToken = form.get('csrf_token')?.toString() ?? '';
+  if (!validateCsrfTokens(existingCsrfToken, formCsrfToken)) {
+    errorMsg = 'Invalid request. Please refresh and try again.';
   } else {
-    return Astro.redirect(`/admin/products/${id}`);
+    const result = await updateProduct(supabase, id, parseProductFormData(form));
+    if (!result.success) {
+      errorMsg = result.error;
+    } else {
+      return Astro.redirect(`/admin/products/${id}`);
+    }
   }
 }
 
@@ -39,6 +50,6 @@ const product = productResult.data;
     </div>
   )}
   <div style="background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:1.5rem;">
-    <AdminProductForm {product} {accessToken} {supabaseUrl} />
+    <AdminProductForm {product} {accessToken} {supabaseUrl} {csrfToken} />
   </div>
 </AdminLayout>

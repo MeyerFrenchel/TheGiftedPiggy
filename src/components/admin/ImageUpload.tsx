@@ -1,6 +1,9 @@
 import { useState, useRef } from 'react';
 import { createClient } from '@supabase/supabase-js';
 
+const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
+
 interface Props {
   accessToken: string;
   supabaseUrl: string;
@@ -15,6 +18,20 @@ export default function ImageUpload({ accessToken, supabaseUrl, currentUrl = '' 
 
   async function handleFile(file: File) {
     setError(null);
+
+    // Validate MIME type against allowlist (file.type can be spoofed client-side,
+    // but Supabase bucket policies enforce this server-side too)
+    if (!ALLOWED_MIME_TYPES.includes(file.type)) {
+      setError('Only JPEG, PNG, WebP, and GIF images are allowed.');
+      return;
+    }
+
+    // Validate file size before uploading
+    if (file.size > MAX_FILE_SIZE) {
+      setError('File must be under 5 MB.');
+      return;
+    }
+
     setUploading(true);
 
     try {

@@ -2,8 +2,16 @@
 export const prerender = false;
 
 import { createSSRClient, createServiceClient } from '@lib/supabase';
+import { generateCsrfToken, setCsrfCookie, readCsrfCookie, validateCsrfTokens } from '@lib/csrf';
 
 let errorMsg = '';
+
+// Read existing token BEFORE generating a new one, so we can validate POST bodies
+const existingCsrfToken = readCsrfCookie(Astro.cookies);
+
+// Always issue a fresh token (rotates after each page load)
+const csrfToken = generateCsrfToken();
+setCsrfCookie(Astro.cookies, csrfToken);
 
 if (Astro.request.method === 'POST') {
   const form = await Astro.request.formData();
@@ -16,27 +24,33 @@ if (Astro.request.method === 'POST') {
     return Astro.redirect('/admin/login');
   }
 
-  const email = form.get('email')?.toString() ?? '';
-  const password = form.get('password')?.toString() ?? '';
-
-  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-
-  if (error || !data.user) {
-    errorMsg = error?.message ?? 'Sign in failed.';
+  // CSRF check
+  const formCsrfToken = form.get('csrf_token')?.toString() ?? '';
+  if (!validateCsrfTokens(existingCsrfToken, formCsrfToken)) {
+    errorMsg = 'Invalid request. Please refresh and try again.';
   } else {
-    // Verify admin role using service client to bypass RLS
-    const serviceClient = createServiceClient();
-    const { data: profile } = await serviceClient
-      .from('profiles')
-      .select('role')
-      .eq('id', data.user.id)
-      .single();
+    const email = form.get('email')?.toString() ?? '';
+    const password = form.get('password')?.toString() ?? '';
 
-    if (!profile || profile.role !== 'admin') {
-      await supabase.auth.signOut();
-      errorMsg = 'Access denied — admin only.';
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+    if (error || !data.user) {
+      // Generic message — don't leak whether the email exists or not
+      errorMsg = 'Invalid email or password.';
     } else {
-      return Astro.redirect('/admin');
+      const serviceClient = createServiceClient();
+      const { data: profile } = await serviceClient
+        .from('profiles')
+        .select('role')
+        .eq('id', data.user.id)
+        .single();
+
+      if (!profile || profile.role !== 'admin') {
+        await supabase.auth.signOut();
+        errorMsg = 'Invalid email or password.';
+      } else {
+        return Astro.redirect('/admin');
+      }
     }
   }
 }
@@ -119,6 +133,7 @@ if (Astro.request.method === 'POST') {
       {errorMsg && <div class="error">{errorMsg}</div>}
 
       <form method="post">
+        <input type="hidden" name="csrf_token" value={csrfToken} />
         <div class="form-group">
           <label for="email">Email</label>
           <input type="email" id="email" name="email" required autocomplete="email" />

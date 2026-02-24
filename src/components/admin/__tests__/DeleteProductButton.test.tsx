@@ -4,7 +4,11 @@ import userEvent from '@testing-library/user-event';
 import DeleteProductButton from '../DeleteProductButton';
 
 describe('DeleteProductButton', () => {
-  const defaultProps = { productId: 'product-abc', productName: 'Test Product' };
+  const defaultProps = {
+    productId: 'product-abc',
+    productName: 'Test Product',
+    csrfToken: 'test-csrf-token-uuid',
+  };
 
   describe('initial state', () => {
     it('shows "Delete" button', () => {
@@ -35,9 +39,7 @@ describe('DeleteProductButton', () => {
 
     it('hides initial Delete button', async () => {
       render(<DeleteProductButton {...defaultProps} />);
-      const deleteBtn = screen.getByRole('button', { name: /delete/i });
-      await userEvent.click(deleteBtn);
-      // Now there should only be "Yes, delete" and "Cancel" — no plain "Delete"
+      await userEvent.click(screen.getByRole('button', { name: /delete/i }));
       expect(screen.queryByRole('button', { name: /^delete$/i })).not.toBeInTheDocument();
     });
   });
@@ -88,6 +90,41 @@ describe('DeleteProductButton', () => {
       await userEvent.click(screen.getByRole('button', { name: /delete/i }));
       const cancelBtn = screen.getByRole('button', { name: /cancel/i });
       expect(cancelBtn).toHaveAttribute('type', 'button');
+    });
+  });
+
+  describe('CSRF protection', () => {
+    it('includes a hidden csrf_token input in the confirmation form', async () => {
+      render(<DeleteProductButton {...defaultProps} />);
+      await userEvent.click(screen.getByRole('button', { name: /delete/i }));
+      const csrfInput = document.querySelector('input[name="csrf_token"]') as HTMLInputElement;
+      expect(csrfInput).toBeTruthy();
+      expect(csrfInput.type).toBe('hidden');
+    });
+
+    it('csrf_token input value matches the csrfToken prop', async () => {
+      render(<DeleteProductButton {...defaultProps} />);
+      await userEvent.click(screen.getByRole('button', { name: /delete/i }));
+      const csrfInput = document.querySelector('input[name="csrf_token"]') as HTMLInputElement;
+      expect(csrfInput.value).toBe('test-csrf-token-uuid');
+    });
+
+    it('csrf_token input is not present before confirmation is shown', () => {
+      render(<DeleteProductButton {...defaultProps} />);
+      // Before clicking Delete the form is not mounted at all
+      expect(document.querySelector('input[name="csrf_token"]')).toBeNull();
+    });
+
+    it('csrf_token input value updates when a different token prop is passed', async () => {
+      const { rerender } = render(<DeleteProductButton {...defaultProps} csrfToken="token-A" />);
+      await userEvent.click(screen.getByRole('button', { name: /delete/i }));
+
+      let csrfInput = document.querySelector('input[name="csrf_token"]') as HTMLInputElement;
+      expect(csrfInput.value).toBe('token-A');
+
+      rerender(<DeleteProductButton {...defaultProps} csrfToken="token-B" />);
+      csrfInput = document.querySelector('input[name="csrf_token"]') as HTMLInputElement;
+      expect(csrfInput.value).toBe('token-B');
     });
   });
 });
