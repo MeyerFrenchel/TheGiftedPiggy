@@ -23,3 +23,30 @@
   for = "/admin/*"
   [headers.values]
     X-Robots-Tag = "noindex, nofollow"
+
+# ---------------------------------------------------------------------------
+# Cache headers for performance
+# ---------------------------------------------------------------------------
+
+# Astro hashed assets — immutable (content-hashed, safe to cache forever)
+[[headers]]
+  for = "/_astro/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Static images in /images/ — cache for 30 days
+[[headers]]
+  for = "/images/*"
+  [headers.values]
+    Cache-Control = "public, max-age=2592000, stale-while-revalidate=86400"
+
+# Favicon and icons — cache for 7 days
+[[headers]]
+  for = "/favicon*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+
+[[headers]]
+  for = "/apple-touch-icon*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"

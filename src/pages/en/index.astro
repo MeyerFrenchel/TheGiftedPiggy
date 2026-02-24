@@ -1,4 +1,5 @@
 ---
+import { getImage } from "astro:assets";
 import PageLayout from "@layouts/PageLayout.astro";
 import Hero from "@components/home/Hero.astro";
 import FeaturedProducts from "@components/home/FeaturedProducts.astro";
@@ -6,8 +7,11 @@ import LatestPosts from "@components/home/LatestPosts.astro";
 import StructuredData from "@components/seo/StructuredData.astro";
 import { getCollection } from "astro:content";
 import { siteConfig } from "@data/site-config";
+import heroImageSrc from "@assets/images/hero/hero-artist.jpg";
 
 const lang = "en";
+
+const heroImage = await getImage({ src: heroImageSrc, format: "webp", width: 520, height: 520, quality: 85 });
 
 const allPosts = await getCollection("blog", ({ data }) => !data.draft && data.lang === "en");
 const sortedPosts = allPosts.sort(
@@ -20,6 +24,7 @@ const sortedPosts = allPosts.sort(
   title={undefined}
   description={siteConfig.description.en}
   structuredDataType="website"
+  preloadImage={heroImage.src}
 >
   <StructuredData type="website" {lang} slot="head" />
   <Hero {lang} />

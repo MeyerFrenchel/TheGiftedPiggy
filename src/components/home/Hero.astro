@@ -1,8 +1,10 @@
 ---
+import { Image } from "astro:assets";
 import Button from "@components/ui/Button.astro";
 import { useTranslations } from "@i18n/utils";
 import { siteConfig } from "@data/site-config";
 import type { Lang } from "@i18n/ui";
+import heroImage from "@assets/images/hero/hero-artist.jpg";
 
 interface Props {
   lang?: Lang;
@@ -219,14 +221,17 @@ const t = useTranslations(lang);
             aria-hidden="true"
           ></div>
 
-          <img
-            src="/images/hero-artist.jpg"
+          <Image
+            src={heroImage}
             alt="Creatoarea The Gifted Piggy lucrând la creații handmade din lut"
-            width="520"
-            height="520"
+            width={520}
+            height={520}
             class="relative rounded-3xl object-cover"
             style="box-shadow: 0 20px 60px rgba(126, 91, 206, 0.25);"
             loading="eager"
+            fetchpriority="high"
+            format="webp"
+            quality={85}
           />
         </div>
       </div>
