@@ -14,7 +14,7 @@ const { post, lang = "ro" } = Astro.props;
 const t = useTranslations(lang);
 const { title, description, pubDate, heroImage, heroImageAlt, tags, author } = post.data;
 
-const href = lang === "en" ? `/en/blog/${post.slug}` : `/blog/${post.slug}`;
+const href = lang === "en" ? `/en/blog/${post.id}` : `/blog/${post.id}`;
 
 const formattedDate = pubDate.toLocaleDateString(lang === "ro" ? "ro-RO" : "en-US", {
   year: "numeric",
