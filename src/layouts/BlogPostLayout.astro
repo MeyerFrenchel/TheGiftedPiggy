@@ -5,6 +5,7 @@ import { Image } from "astro:assets";
 import { useTranslations } from "@i18n/utils";
 import type { Lang } from "@i18n/ui";
 import type { CollectionEntry } from "astro:content";
+import { getCollection } from "astro:content";
 
 interface Props {
   post: CollectionEntry<"blog">;
@@ -12,8 +13,21 @@ interface Props {
 }
 
 const { post, lang = "ro" } = Astro.props;
-const { title, description, pubDate, updatedDate, heroImage, heroImageAlt, author } = post.data;
+const { title, description, pubDate, updatedDate, heroImage, heroImageAlt, author, translationKey } = post.data;
 const t = useTranslations(lang);
+
+// Find the translated post by matching translationKey
+let alternatePath: string | undefined;
+if (translationKey) {
+  const allPosts = await getCollection("blog");
+  const targetLang = lang === "ro" ? "en" : "ro";
+  const translated = allPosts.find(
+    (p) => p.data.translationKey === translationKey && p.data.lang === targetLang
+  );
+  if (translated) {
+    alternatePath = targetLang === "en" ? `/en/blog/${translated.id}` : `/blog/${translated.id}`;
+  }
+}
 
 const formattedPubDate = pubDate.toLocaleDateString(lang === "ro" ? "ro-RO" : "en-US", {
   year: "numeric",
@@ -33,6 +47,7 @@ const formattedUpdatedDate = updatedDate?.toLocaleDateString(lang === "ro" ? "ro
   description={description}
   type="article"
   {lang}
+  {alternatePath}
 >
   <StructuredData
     type="blogPost"

@@ -3,6 +3,7 @@ import type { Lang } from "../../i18n/ui";
 interface Props {
   lang: Lang;
   currentPath: string;
+  alternatePath?: string;
 }
 
 // Map Romanian paths to English equivalents
@@ -42,9 +43,9 @@ function getAlternatePath(currentPath: string, currentLang: Lang): string {
   }
 }
 
-export default function LanguageSwitcher({ lang, currentPath }: Props) {
+export default function LanguageSwitcher({ lang, currentPath, alternatePath }: Props) {
   const targetLang: Lang = lang === "ro" ? "en" : "ro";
-  const targetPath = getAlternatePath(currentPath, lang);
+  const targetPath = alternatePath ?? getAlternatePath(currentPath, lang);
 
   const handleSwitch = () => {
     window.location.href = targetPath;

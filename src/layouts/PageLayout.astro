@@ -14,14 +14,16 @@ interface Props {
   canonicalURL?: string;
   structuredDataType?: "website" | "organization" | "blogPost" | "product" | "breadcrumb";
   preloadImage?: string;
+  alternatePath?: string;
 }
 
 const props = Astro.props;
 const lang = props.lang ?? "ro";
+const { alternatePath } = props;
 ---
 
 <BaseLayout {...props} {lang}>
-  <Header {lang} />
+  <Header {lang} {alternatePath} />
   <main id="main-content">
     <slot />
   </main>

@@ -15,6 +15,7 @@ const blog = defineCollection({
       draft: z.boolean().default(false),
       author: z.string().default("The Gifted Piggy"),
       lang: z.enum(["ro", "en"]).default("ro"),
+      translationKey: z.string().optional(),
     }),
 });
 

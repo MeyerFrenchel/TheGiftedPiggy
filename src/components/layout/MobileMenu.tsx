@@ -13,9 +13,10 @@ interface NavItem {
 interface Props {
   lang: Lang;
   currentPath: string;
+  alternatePath?: string;
 }
 
-export default function MobileMenu({ lang, currentPath }: Props) {
+export default function MobileMenu({ lang, currentPath, alternatePath }: Props) {
   const [isOpen, setIsOpen] = useState(false);
   const t = (key: keyof (typeof ui)["ro"]) => ui[lang][key] ?? ui["ro"][key] ?? key;
 
@@ -173,7 +174,7 @@ export default function MobileMenu({ lang, currentPath }: Props) {
                 <span className="text-sm font-semibold text-[var(--text-secondary)]">
                   {t("ui.language")}
                 </span>
-                <LanguageSwitcher lang={lang} currentPath={currentPath} client:load />
+                <LanguageSwitcher lang={lang} currentPath={currentPath} alternatePath={alternatePath} client:load />
               </div>
             </div>
           </div>
