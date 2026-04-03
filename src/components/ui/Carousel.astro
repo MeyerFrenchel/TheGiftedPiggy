@@ -1,0 +1,149 @@
+---
+interface Props {
+  images: { src: ImageMetadata; alt: string }[];
+}
+
+import { Image } from 'astro:assets';
+
+const { images } = Astro.props;
+---
+
+<div class="carousel-wrapper my-8" data-carousel>
+  <!-- Main preview image -->
+  <div class="relative overflow-hidden rounded-xl bg-black/5">
+    <div class="carousel-main aspect-[4/3] flex items-center justify-center">
+      {images.map((img, i) => (
+        <div
+          class:list={["carousel-slide absolute inset-0 transition-opacity duration-500", i === 0 ? "opacity-100" : "opacity-0 pointer-events-none"]}
+          data-slide={i}
+        >
+          <Image
+            src={img.src}
+            alt={img.alt}
+            width={800}
+            height={600}
+            class="w-full h-full object-contain"
+            loading={i === 0 ? "eager" : "lazy"}
+          />
+        </div>
+      ))}
+    </div>
+
+    <!-- Navigation arrows -->
+    <button
+      class="carousel-prev absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 rounded-full w-10 h-10 flex items-center justify-center shadow-md transition-all hover:scale-110 focus:outline-none focus:ring-2 focus:ring-terracotta"
+      aria-label="Previous image"
+      data-prev
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+    </button>
+    <button
+      class="carousel-next absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 rounded-full w-10 h-10 flex items-center justify-center shadow-md transition-all hover:scale-110 focus:outline-none focus:ring-2 focus:ring-terracotta"
+      aria-label="Next image"
+      data-next
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+    </button>
+
+    <!-- Counter -->
+    <div class="absolute bottom-3 left-1/2 -translate-x-1/2 bg-black/50 text-white text-sm px-3 py-1 rounded-full" data-counter>
+      1 / {images.length}
+    </div>
+  </div>
+
+  <!-- Thumbnails -->
+  <div class="mt-3 flex gap-2 overflow-x-auto pb-2 scrollbar-thin" data-thumbs>
+    {images.map((img, i) => (
+      <button
+        class:list={["carousel-thumb flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-terracotta", i === 0 ? "border-terracotta opacity-100" : "border-transparent opacity-60"]}
+        data-thumb={i}
+        aria-label={`Go to image ${i + 1}`}
+      >
+        <Image
+          src={img.src}
+          alt=""
+          width={80}
+          height={80}
+          class="w-full h-full object-cover"
+          loading="lazy"
+        />
+      </button>
+    ))}
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll('[data-carousel]').forEach((carousel) => {
+    const slides = carousel.querySelectorAll('[data-slide]') as NodeListOf<HTMLElement>;
+    const thumbs = carousel.querySelectorAll('[data-thumb]') as NodeListOf<HTMLElement>;
+    const counter = carousel.querySelector('[data-counter]') as HTMLElement;
+    const prevBtn = carousel.querySelector('[data-prev]') as HTMLElement;
+    const nextBtn = carousel.querySelector('[data-next]') as HTMLElement;
+    const total = slides.length;
+    let current = 0;
+
+    function goTo(index: number) {
+      if (index < 0) index = total - 1;
+      if (index >= total) index = 0;
+
+      slides.forEach((slide, i) => {
+        slide.classList.toggle('opacity-100', i === index);
+        slide.classList.toggle('opacity-0', i !== index);
+        slide.classList.toggle('pointer-events-none', i !== index);
+      });
+
+      thumbs.forEach((thumb, i) => {
+        thumb.classList.toggle('border-terracotta', i === index);
+        thumb.classList.toggle('border-transparent', i !== index);
+        thumb.classList.toggle('opacity-100', i === index);
+        thumb.classList.toggle('opacity-60', i !== index);
+      });
+
+      counter.textContent = `${index + 1} / ${total}`;
+      current = index;
+
+      // Scroll active thumbnail into view
+      thumbs[index]?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    }
+
+    prevBtn?.addEventListener('click', () => goTo(current - 1));
+    nextBtn?.addEventListener('click', () => goTo(current + 1));
+    thumbs.forEach((thumb, i) => thumb.addEventListener('click', () => goTo(i)));
+
+    // Keyboard navigation
+    carousel.addEventListener('keydown', (e) => {
+      const event = e as KeyboardEvent;
+      if (event.key === 'ArrowLeft') goTo(current - 1);
+      if (event.key === 'ArrowRight') goTo(current + 1);
+    });
+
+    // Touch/swipe support
+    let touchStartX = 0;
+    const mainArea = carousel.querySelector('.carousel-main') as HTMLElement;
+    mainArea?.addEventListener('touchstart', (e) => {
+      touchStartX = (e as TouchEvent).touches[0].clientX;
+    }, { passive: true });
+    mainArea?.addEventListener('touchend', (e) => {
+      const diff = touchStartX - (e as TouchEvent).changedTouches[0].clientX;
+      if (Math.abs(diff) > 50) {
+        diff > 0 ? goTo(current + 1) : goTo(current - 1);
+      }
+    }, { passive: true });
+  });
+</script>
+
+<style>
+  .scrollbar-thin::-webkit-scrollbar {
+    height: 4px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: var(--color-terracotta, #c87941);
+    border-radius: 2px;
+  }
+  .carousel-main {
+    position: relative;
+  }
+</style>
