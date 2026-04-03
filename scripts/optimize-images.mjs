@@ -11,12 +11,18 @@
 
 import sharp from "sharp";
 import { readdir, stat, rename, writeFile, unlink } from "fs/promises";
+
 import { join, extname } from "path";
 import { fileURLToPath } from "url";
 import path from "path";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const IMAGES_DIR = join(__dirname, "../src/content/blog/images");
+const IMAGES_DIRS = [
+  join(__dirname, "../src/content/blog/images"),
+  join(__dirname, "../src/content/products/images"),
+  join(__dirname, "../src/assets/images"),
+  join(__dirname, "../public"),
+];
 const MAX_WIDTH = 1920;
 const SKIP_BELOW_KB = 100;
 
@@ -69,14 +75,33 @@ function kb(bytes) {
   return (bytes / 1024).toFixed(0);
 }
 
-async function main() {
-  const files = await readdir(IMAGES_DIR);
-  console.log(`Optimizez ${files.length} fișiere din ${IMAGES_DIR}\n`);
-
-  for (const file of files) {
-    await optimizeImage(join(IMAGES_DIR, file));
+async function processDir(dir) {
+  let entries;
+  try {
+    entries = await readdir(dir, { withFileTypes: true });
+  } catch {
+    return; // directorul nu există
   }
+  const imageFiles = entries.filter(
+    (e) => e.isFile() && extensions.has(extname(e.name).toLowerCase())
+  );
+  if (imageFiles.length > 0) {
+    console.log(`\n📁 ${dir}`);
+    for (const entry of imageFiles) {
+      await optimizeImage(join(dir, entry.name));
+    }
+  }
+  for (const entry of entries) {
+    if (entry.isDirectory()) {
+      await processDir(join(dir, entry.name));
+    }
+  }
+}
 
+async function main() {
+  for (const dir of IMAGES_DIRS) {
+    await processDir(dir);
+  }
   console.log("\nGata.");
 }
 
