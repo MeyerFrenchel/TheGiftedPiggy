@@ -1,4 +1,31 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <rect width="100" height="100" rx="20" fill="#FDF6EC"/>
-  <text y="75" font-size="75" text-anchor="middle" x="50">🐷</text>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="130 45 340 340"><title>The Gifted Piggy</title><rect x="130" y="45" width="340" height="340" rx="64" fill="#fdf6ec"/><g transform="translate(300 250)">
+<path d="M-92 0 L -80 -14 L 80 -14 L 92 0 Z" fill="#3E2866"/>
+<g transform="translate(0 -30)">
+<path d="M-56 -26 C -70 -60 -58 -80 -40 -84 C -26 -70 -22 -54 -26 -42 Z" fill="#F4BCCB"/>
+<path d="M-50 -34 C -60 -58 -52 -72 -41 -75 C -32 -64 -30 -52 -32 -44 Z" fill="#DB8AA0"/>
+<path d="M56 -26 C 70 -60 58 -80 40 -84 C 26 -70 22 -54 26 -42 Z" fill="#F4BCCB"/>
+<path d="M50 -34 C 60 -58 52 -72 41 -75 C 32 -64 30 -52 32 -44 Z" fill="#DB8AA0"/>
+<ellipse cx="0" cy="0" rx="66" ry="56" fill="#F4BCCB"/>
+<ellipse cx="-38" cy="14" rx="12" ry="7" fill="#F29BB3" opacity=".75"/>
+<ellipse cx="38" cy="14" rx="12" ry="7" fill="#F29BB3" opacity=".75"/>
+<path d="M-34 -6 q 9 -10 18 0" fill="none" stroke="#3B2B40" stroke-width="4" stroke-linecap="round"/>
+<path d="M16 -6 q 9 -10 18 0" fill="none" stroke="#3B2B40" stroke-width="4" stroke-linecap="round"/>
+<ellipse cx="0" cy="14" rx="22" ry="16" fill="#EE9FA6"/>
+<ellipse cx="-7" cy="14" rx="3.6" ry="5.5" fill="#B05868"/>
+<ellipse cx="7" cy="14" rx="3.6" ry="5.5" fill="#B05868"/>
+<path d="M-7 36 q 7 6 14 0" fill="none" stroke="#B05868" stroke-width="2.6" stroke-linecap="round"/>
+</g>
+<rect x="-92" y="0" width="184" height="120" rx="4" fill="#7C5CB0"/>
+<rect x="-92" y="0" width="184" height="6" fill="#9477C4"/>
+<rect x="-11" y="0" width="22" height="120" fill="#4B317A"/>
+<ellipse cx="-40" cy="3" rx="15" ry="11" fill="#F4BCCB"/>
+<ellipse cx="40" cy="3" rx="15" ry="11" fill="#F4BCCB"/>
+<path d="M-44 5 v6 M-36 5 v6 M36 5 v6 M44 5 v6" stroke="#DB8AA0" stroke-width="2" stroke-linecap="round"/>
+<g transform="translate(66 96) rotate(-15) scale(0.55)"><path d="M0 0 q 3 10 10 17" fill="none" stroke="#7CC468" stroke-width="3.5" stroke-linecap="round"/><path d="M0 0 C -5 -7 -16 -9 -18 -18 C -20 -27 -9 -31 -3 -24 C 1 -31 13 -29 11 -18 C 9 -10 4 -5 0 0 Z" fill="#7CC468" transform="rotate(0)"/><path d="M0 0 C -5 -7 -16 -9 -18 -18 C -20 -27 -9 -31 -3 -24 C 1 -31 13 -29 11 -18 C 9 -10 4 -5 0 0 Z" fill="#7CC468" transform="rotate(120)"/><path d="M0 0 C -5 -7 -16 -9 -18 -18 C -20 -27 -9 -31 -3 -24 C 1 -31 13 -29 11 -18 C 9 -10 4 -5 0 0 Z" fill="#7CC468" transform="rotate(240)"/></g>
+<g transform="translate(14 -128) rotate(-12)">
+  <path d="M-98 0 L -88 -12 L 88 -12 L 98 0 Z" fill="#9477C4"/>
+  <path d="M-8 0 L -7 -12 L 7 -12 L 8 0 Z" fill="#4B317A"/>
+  <rect x="-98" y="0" width="196" height="24" rx="3" fill="#7C5CB0"/>
+  <rect x="-11" y="0" width="22" height="24" fill="#4B317A"/>
+  <g transform="translate(0 -8) scale(1.0)"><path d="M0 0 C -14 -22 -40 -20 -40 -4 C -40 12 -16 12 0 0 Z" fill="#E0719E"/><path d="M0 0 C 14 -22 40 -20 40 -4 C 40 12 16 12 0 0 Z" fill="#E0719E"/><path d="M-6 2 L -16 20 M6 2 L 16 20" stroke="#E0719E" stroke-width="6" stroke-linecap="round"/><ellipse cx="0" cy="0" rx="9" ry="8" fill="#C85587"/></g>
+</g></g></svg>

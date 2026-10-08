@@ -20,11 +20,9 @@ const currentYear = new Date().getFullYear();
       <div class="space-y-4">
         <a
           href={lang === "en" ? "/en/" : "/"}
-          class="flex items-center gap-2 text-xl font-bold text-primary"
-          style="font-family: var(--font-heading);"
+          class="brand-logo brand-logo-footer transition-opacity hover:opacity-80"
         >
-          <span class="text-terracotta">🐷</span>
-          <span>{siteConfig.name}</span>
+          <img src="/tgp-logo.svg" alt={siteConfig.name} width="580" height="415" loading="lazy" />
         </a>
         <p class="text-sm text-muted max-w-xs">
           {t("footer.tagline")}

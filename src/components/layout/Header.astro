@@ -16,16 +16,14 @@ const currentPath = Astro.url.pathname;
 ---
 
 <header class="nav-bg border-theme sticky top-0 z-50 border-b backdrop-blur-sm" id="site-header">
-  <div class="container mx-auto flex items-center justify-between px-4 py-5">
+  <div class="container mx-auto flex items-center justify-between gap-4 px-4 py-2">
     <!-- Logo -->
     <a
       href={lang === "en" ? "/en/" : "/"}
-      class="flex items-center gap-2 text-2xl font-bold tracking-wide text-primary transition-opacity hover:opacity-80"
-      style="font-family: var(--font-heading);"
+      class="brand-logo brand-logo-header shrink-0 transition-opacity hover:opacity-80"
       aria-label={siteConfig.name}
     >
-      <span class="text-terracotta">🐷</span>
-      <span>{siteConfig.name}</span>
+      <img src="/tgp-logo.svg" alt={siteConfig.name} width="580" height="415" fetchpriority="high" />
     </a>
 
     <!-- Desktop Navigation -->

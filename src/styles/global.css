@@ -1,6 +1,28 @@
 @import "tailwindcss";
 @import "./fonts.css";
 
+/* Keep the supplied artwork proportional and legible across site themes. */
+.brand-logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+}
+.brand-logo img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.brand-logo-header { width: 126px; }
+.brand-logo-footer { width: 200px; }
+[data-theme="dark"] .brand-logo {
+  background: #fdf6ec;
+  box-shadow: 0 0 0 5px #fdf6ec;
+}
+@media (min-width: 768px) {
+  .brand-logo-header { width: 140px; }
+}
+
 @theme {
   /* ===== COLORS ===== */
   --color-cream: #fdf6ec;

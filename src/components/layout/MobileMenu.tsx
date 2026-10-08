@@ -104,12 +104,13 @@ export default function MobileMenu({ lang, currentPath, alternatePath }: Props) 
             }`}
           >
             <div className="flex items-center justify-between border-b border-[var(--border-color)] p-4">
-              <span
-                className="text-lg font-bold text-[var(--text-primary)]"
-                style={{ fontFamily: "var(--font-heading)" }}
+              <a
+                href={lang === "en" ? "/en/" : "/"}
+                onClick={close}
+                className="brand-logo brand-logo-header"
               >
-                🐷 The Gifted Piggy
-              </span>
+                <img src="/tgp-logo.svg" alt="The Gifted Piggy" width="580" height="415" />
+              </a>
               <button
                 onClick={close}
                 aria-label={t("ui.closeMenu")}
