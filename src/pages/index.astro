@@ -1,4 +1,8 @@
 ---
+// Product availability must recover without rebuilding after a database outage.
+export const prerender = false;
+Astro.response.headers.set("Cache-Control", "no-store");
+
 import { getImage } from "astro:assets";
 import PageLayout from "@layouts/PageLayout.astro";
 import Hero from "@components/home/Hero.astro";
